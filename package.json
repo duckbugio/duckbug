@@ -7,7 +7,7 @@
     "frontend"
   ],
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "command -v husky >/dev/null 2>&1 && husky install || echo 'Husky not found, skipping git hooks setup'",
     "lint": "make lint",
     "lint:frontend": "make lint-frontend",
     "lint:backend": "make lint-backend",
@@ -21,7 +21,8 @@
     "dev:down": "make down",
     "dev:restart": "make restart",
     "dev:clean": "make clean",
-    "dev:init": "make init"
+    "dev:init": "make init",
+    "postinstall": "npm run prepare"
   },
   "devDependencies": {
     "husky": "^8.0.3"
