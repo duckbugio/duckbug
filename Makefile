@@ -59,6 +59,10 @@ frontend-lint:
 	docker compose run --rm frontend-cli npm run lint:styles
 	docker compose run --rm frontend-cli npm run lint:prettier
 
+frontend-lint-fix:
+	@echo "🔧 Fixing frontend linting issues..."
+	docker compose run --rm frontend-cli npm run lint:fix
+
 frontend-test:
 	@echo "🧪 Running frontend tests..."
 	docker compose run --rm frontend-cli npm run test:ci
@@ -97,6 +101,10 @@ lint: frontend-lint backend-lint ## Run all linters
 lint-frontend: frontend-lint ## Run frontend linters only
 
 lint-backend: backend-lint ## Run backend linter only
+
+lint-fix: frontend-lint-fix backend-lint ## Fix all linting issues automatically
+
+lint-fix-frontend: frontend-lint-fix ## Fix frontend linting issues only
 
 # Building
 build: frontend-build ## Build all projects

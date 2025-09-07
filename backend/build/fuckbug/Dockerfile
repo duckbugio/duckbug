@@ -4,8 +4,8 @@ RUN apk add --no-cache git gcc musl-dev
 
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 
-ENV BIN_FILE /opt/app/bin
-ENV CODE_DIR /go/src/
+ENV BIN_FILE=/opt/app/bin
+ENV CODE_DIR=/go/src/
 
 WORKDIR ${CODE_DIR}
 
@@ -25,12 +25,12 @@ FROM alpine:latest
 LABEL SERVICE="fuckbug"
 LABEL MAINTAINERS="zaytcev.com"
 
-ENV BIN_FILE /opt/app/bin
+ENV BIN_FILE=/opt/app/bin
 COPY --from=build ${BIN_FILE} ${BIN_FILE}
 
-ENV CONFIG_FILE /etc/app/config.json
+ENV CONFIG_FILE=/etc/app/config.json
 COPY configs/fuckbug/config.json ${CONFIG_FILE}
 
 EXPOSE 80
 
-CMD ${BIN_FILE} -config ${CONFIG_FILE}
+CMD ["/opt/app/bin", "-config", "/etc/app/config.json"]
