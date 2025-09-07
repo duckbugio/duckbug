@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "DuckBug - Error tracking and logging platform",
   "private": true,
-  "workspaces": [
-    "frontend"
-  ],
   "scripts": {
     "prepare": "command -v husky >/dev/null 2>&1 && husky install || echo 'Husky not found, skipping git hooks setup'",
     "lint": "make lint",
