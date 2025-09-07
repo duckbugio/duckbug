@@ -1,8 +1,8 @@
 import {useUnit} from 'effector-react';
-import {loginFormSubmitted, redirectToHomeFx, $loginError} from '@/features/auth/model/authModel';
+import {$loginError, loginFormSubmitted, redirectToHomeFx} from '@/features/auth/model/authModel';
 import {LoginForm} from '@/features/auth/ui/LoginForm';
 import {useEffect} from 'react';
-import {useNavigate, useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {Alert} from '@gravity-ui/uikit';
 
 export const LoginPage = () => {
@@ -21,13 +21,25 @@ export const LoginPage = () => {
     const message = location.state?.message;
 
     return (
-        <div style={{padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh'}}>
+        <div
+            style={{
+                padding: '20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '50vh',
+            }}
+        >
             <div>
                 {message && (
                     <Alert theme="success" style={{marginBottom: '20px'}} message={message} />
                 )}
                 {loginError && (
-                    <Alert theme="danger" style={{marginBottom: '20px'}} message={`Ошибка входа: ${loginError.message}`} />
+                    <Alert
+                        theme="danger"
+                        style={{marginBottom: '20px'}}
+                        message={`Ошибка входа: ${loginError.message}`}
+                    />
                 )}
                 <LoginForm onSubmit={login} />
                 <div style={{marginTop: '20px', textAlign: 'center'}}>

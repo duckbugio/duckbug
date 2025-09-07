@@ -1,5 +1,5 @@
 import {useForm} from 'react-hook-form';
-import {Box, Button, Flex, TextInput, Text as GravityText} from '@gravity-ui/uikit';
+import {Box, Button, Flex, Text as GravityText, TextInput} from '@gravity-ui/uikit';
 import {SignupCredentials} from '@/features/auth/types';
 
 type SignupFormProps = {

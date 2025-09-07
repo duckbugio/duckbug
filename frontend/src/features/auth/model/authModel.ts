@@ -1,7 +1,12 @@
 import {createEffect, createEvent, createStore, sample} from 'effector';
 import {loginUser} from '../api/loginUser';
 import {signupUser} from '../api/signupUser';
-import {LoginCredentials, LoginResponse, SignupCredentials, SignupResponse} from '@/features/auth/types';
+import {
+    LoginCredentials,
+    LoginResponse,
+    SignupCredentials,
+    SignupResponse,
+} from '@/features/auth/types';
 
 export const loginFx = createEffect<LoginCredentials, LoginResponse, Error>(async (credentials) => {
     const response = await loginUser(credentials);
@@ -10,10 +15,12 @@ export const loginFx = createEffect<LoginCredentials, LoginResponse, Error>(asyn
     return response;
 });
 
-export const signupFx = createEffect<SignupCredentials, SignupResponse, Error>(async (credentials) => {
-    const response = await signupUser(credentials);
-    return response;
-});
+export const signupFx = createEffect<SignupCredentials, SignupResponse, Error>(
+    async (credentials) => {
+        const response = await signupUser(credentials);
+        return response;
+    },
+);
 
 const logoutFx = createEffect<void, void, Error>(async () => {
     localStorage.removeItem('accessToken');
@@ -47,6 +54,10 @@ export const $isAuthInitialized = createStore(false)
 export const $loginError = createStore<Error | null>(null)
     .on(loginFx.failData, (_, error) => error)
     .reset(loginFx);
+
+export const $signupError = createStore<Error | null>(null)
+    .on(signupFx.failData, (_, error) => error)
+    .reset(signupFx);
 
 export const initAuth = createEvent();
 
