@@ -1,0 +1,56 @@
+services:
+  traefik:
+    image: traefik:3.3
+    command:
+      --providers.docker=true
+      --providers.docker.exposedByDefault=false
+      --entryPoints.http.address=:80
+    ports:
+      - "80:80"
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+
+  frontend:
+    build:
+      context: docker/development/nginx
+    networks:
+      - traefik-public
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.frontend.rule=Host(`fuckbug.localhost`) || Host(`www.fuckbug.localhost`)
+      - traefik.http.routers.frontend.entryPoints=http
+      - traefik.http.services.frontend.loadBalancer.server.port=80
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.regex=^(https?://)www.fuckbug.localhost/(.*)$$
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.replacement=$${1}fuckbug.localhost/$${2}
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.permanent=true
+      - traefik.http.routers.frontend.middlewares=frontend-redirect
+
+  frontend-node:
+    build:
+      context: docker/development/node
+    environment:
+      WDS_SOCKET_PORT: 0
+      REACT_APP_API_BASE_URL: 'https://api.fuckbug.io/v1'
+    volumes:
+      - .:/app
+    command: >
+      bash -c 'until [ -f .ready ]; do sleep 1 ; done &&
+      npm run dev'
+    tty: true
+
+  frontend-node-cli:
+    build:
+      context: docker/development/node
+    volumes:
+      - .:/app
+
+networks:
+  traefik-public:
+    name: traefik-public

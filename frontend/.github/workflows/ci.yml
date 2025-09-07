@@ -1,0 +1,96 @@
+name: Pipeline
+
+on: push
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository }}
+  REGISTRY_HOST: ghcr.io
+  REGISTRY_USERNAME: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_HOST }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+
+      - name: Init
+        run: make init
+
+      - name: ESLint
+        run: make eslint
+
+      - name: StyleLint
+        run: make stylelint
+
+      - name: Prettier
+        run: make prettier
+
+      - name: Down
+        run: make docker-down-clear
+
+  build:
+    needs: analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_HOST }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+
+      - name: Inject branch slug
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_REF_SLUG}-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+      - name: Build
+        run: make build-project
+
+      - name: Push
+        run: make push
+
+  deploy:
+    needs: build
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject branch slug
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_REF_SLUG}-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.PRODUCTION_KEY }}
+          known_hosts: ${{ vars.PRODUCTION_HOST }}
+
+      - name: Deploy
+        run: make deploy
+        env:
+          DOCKERHUB_USER: ${{ env.REGISTRY_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ env.REGISTRY_PASSWORD }}
+          BUILD_NUMBER: ${GITHUB_RUN_NUMBER}
+          HOST: ${{ vars.PRODUCTION_HOST }}
+          PORT: ${{ vars.PRODUCTION_PORT }}
+          PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+          DOMAIN: ${{ vars.DOMAIN }}
+          REACT_APP_API_BASE_URL: 'https://api.fuckbug.io/v1'

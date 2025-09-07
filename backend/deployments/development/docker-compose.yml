@@ -1,0 +1,28 @@
+services:
+  fuckbug-api:
+    container_name: fuckbug-api
+    build:
+      context: ../..
+      dockerfile: ./deployments/development/Dockerfile
+    volumes:
+      - ../../.:/app
+    environment:
+      - AIR_WORKSPACE_ROOT=/app
+      - GOPATH=/go
+    command: air -c .air.toml
+    ports:
+      - "80:80"
+      - "2345:2345"
+    networks:
+      - fuckbug_network
+
+  golangci-lint:
+    image: golangci/golangci-lint:v1.64.2
+    volumes:
+      - ./../..:/app
+    working_dir: /app
+    command: golangci-lint run -v
+
+networks:
+  fuckbug_network:
+    driver: bridge

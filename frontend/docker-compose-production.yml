@@ -1,0 +1,21 @@
+services:
+  fuckbug-web:
+    container_name: fuckbug-web
+    image: ${REGISTRY}/fuckbug:${IMAGE_TAG}
+    restart: always
+    networks:
+      - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.fuckbug-web.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.fuckbug-web.middlewares=secure-headers
+      - traefik.http.routers.fuckbug-web.entryPoints=https
+      - traefik.http.routers.fuckbug-web.tls=true
+      - traefik.http.routers.fuckbug-web.tls.certResolver=letsEncrypt
+    environment:
+      REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL}
+
+networks:
+  traefik-public:
+    external: true
