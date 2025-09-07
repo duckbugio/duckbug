@@ -54,7 +54,7 @@ RUN mkdir -p /var/cache/nginx /var/log/nginx /etc/nginx/conf.d && \
 EXPOSE 80
 
 # Start both nginx and backend
-COPY start.sh /nginx/start.sh
-RUN chmod +x /nginxstart.sh
+COPY nginx/start.sh /nginx/start.sh
+RUN chmod +x /nginx/start.sh
 
 CMD ["/nginx/start.sh"]
