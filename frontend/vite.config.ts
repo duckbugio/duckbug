@@ -9,7 +9,9 @@ export default defineConfig({
     base: '/',
     publicDir: './public',
     server: {
-        host: true,
+        host: '0.0.0.0',
+        port: 5173,
+        allowedHosts: ['frontend-node', 'localhost', '127.0.0.1'],
     },
     resolve: {
         alias: {

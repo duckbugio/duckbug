@@ -20,16 +20,15 @@ services:
 
   # Backend API
   backend:
-    container_name: duckbug-api
     build:
       context: ./backend
       dockerfile: ./deployments/development/Dockerfile
     volumes:
       - ./backend:/app
     environment:
-      - AIR_WORKSPACE_ROOT=/app
-      - GOPATH=/go
-      - API_PORT=8080
+      - AIR_WORKSPACE_ROOT=${AIR_WORKSPACE_ROOT:-/app}
+      - GOPATH=${GOPATH:-/go}
+      - API_PORT=${API_PORT:-8080}
     command: air -c .air.toml
     ports:
       - "8080:8080"
@@ -63,16 +62,17 @@ services:
       - traefik.http.routers.frontend.middlewares=frontend-redirect
 
   # Frontend development server
-  frontend-dev:
+  frontend-node:
     build:
       context: ./frontend/docker/development/node
     environment:
-      WDS_SOCKET_PORT: 0
-      REACT_APP_API_BASE_URL: 'http://api.duckbug.localhost'
+      - WDS_SOCKET_PORT=${WDS_SOCKET_PORT:-0}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://api.duckbug.localhost}
     volumes:
       - ./frontend:/app
     command: >
       bash -c 'until [ -f .ready ]; do sleep 1 ; done &&
+      npm install &&
       npm run dev'
     tty: true
     networks:
@@ -102,9 +102,9 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: duckbug
-      POSTGRES_USER: duckbug
-      POSTGRES_PASSWORD: duckbug
+      POSTGRES_DB: ${POSTGRES_DB:-duckbug}
+      POSTGRES_USER: ${POSTGRES_USER:-duckbug}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-duckbug}
     ports:
       - "5432:5432"
     volumes:

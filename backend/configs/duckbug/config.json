@@ -4,7 +4,7 @@
   },
   "port": 8080,
   "postgres": {
-    "dsn": "host=localhost port=5432 user=USER password=PASSWORD dbname=NAME sslmode=disable"
+    "dsn": "host=postgres port=5432 user=duckbug password=duckbug dbname=duckbug sslmode=disable"
   },
   "domain": "duckbug.io"
 }
