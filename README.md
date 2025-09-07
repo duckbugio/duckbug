@@ -165,7 +165,9 @@ docker compose up -d backend frontend postgres
 
 ### Production
 
-Для production используйте отдельные Dockerfile:
+Для production доступны два варианта:
+
+**1. Отдельные образы (рекомендуется для масштабирования):**
 
 ```bash
 # Собрать production образы
@@ -175,6 +177,53 @@ make build-production
 docker build -f backend/build/duckbug/Dockerfile -t duckbug-api:latest ./backend
 docker build -f frontend/docker/production/nginx/Dockerfile -t duckbug-web:latest ./frontend
 ```
+
+**2. Единый образ (простое развертывание):**
+
+```bash
+# Собрать единый образ (frontend + backend)
+make build-unified
+
+# Или вручную
+docker build -t duckbug:latest .
+
+# Запустить
+docker run -d --name duckbug-app -p 80:80 duckbug:latest
+```
+
+Единый образ содержит:
+- Frontend (React) - статические файлы через nginx
+- Backend (Go API) - работает на порту 8080 внутри контейнера
+- Nginx - проксирует API запросы к backend
+
+## 🚀 Production Deployment
+
+Для production деплоя используйте каталог `deploy/production/`:
+
+```bash
+# Настройте переменные окружения
+cd deploy/production
+cp env.example .env
+nano .env
+
+# Запустите деплой
+docker compose -f docker-compose-production.yml pull
+docker compose -f docker-compose-production.yml up -d
+```
+
+Или через Makefile:
+```bash
+make deploy-production
+```
+
+**Особенности production системы:**
+- 🔒 **Traefik** - reverse proxy с автоматическими SSL сертификатами
+- 🌐 **HTTPS** - автоматические Let's Encrypt сертификаты
+- 🔄 **Автоматические редиректы** - www → основной домен
+- 📊 **Мониторинг** - health checks для всех сервисов
+- 🐳 **Единый образ** - frontend + backend в одном контейнере
+
+Подробная документация: [deploy/production/README.md](deploy/production/README.md)
 
 ## 🔧 CI/CD
 

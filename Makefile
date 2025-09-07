@@ -128,6 +128,14 @@ build-production: ## Build production images
 	docker build -f backend/build/duckbug/Dockerfile -t duckbug-api:latest ./backend
 	docker build -f frontend/docker/production/nginx/Dockerfile -t duckbug-web:latest ./frontend
 
+build-unified: ## Build unified image (frontend + backend)
+	@echo "🏗️ Building unified DuckBug image..."
+	docker build -f deploy/production/Dockerfile -t duckbug:latest .
+
+deploy-production: ## Deploy to production using docker-compose
+	@echo "🚀 Deploying to production..."
+	cd deploy/production && docker compose -f docker-compose-production.yml pull && docker compose -f docker-compose-production.yml up -d
+
 # Cleanup
 clean: ## Clean up development environment
 	@echo "🧹 Cleaning up..."

@@ -2,7 +2,7 @@
   "logger": {
     "level": "INFO"
   },
-  "port": 80,
+  "port": 8080,
   "postgres": {
     "dsn": "host=localhost port=5432 user=USER password=PASSWORD dbname=NAME sslmode=disable"
   },
