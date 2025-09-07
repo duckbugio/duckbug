@@ -1,0 +1,57 @@
+# Lefthook configuration for DuckBug project
+# https://github.com/evilmartians/lefthook
+
+# Pre-commit hooks - run before each commit
+pre-commit:
+  commands:
+    frontend-lint:
+      run: make lint-frontend
+      fail_text: "Frontend linting failed"
+    backend-lint:
+      run: make lint-backend
+      fail_text: "Backend linting failed"
+
+# Pre-push hooks - run before each push
+pre-push:
+  commands:
+    frontend-tests:
+      run: make test-frontend
+      fail_text: "Frontend tests failed"
+    backend-tests:
+      run: make test-backend
+      fail_text: "Backend tests failed"
+
+# Commit message validation
+commit-msg:
+  commands:
+    commit-msg-check:
+      run: |
+        commit_regex='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,50}'
+        commit_msg=$(cat "$LEFTHOOK_COMMIT_MSG_FILE")
+        if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
+          echo "❌ Invalid commit message format!"
+          echo ""
+          echo "Format: type(scope): description"
+          echo ""
+          echo "Types:"
+          echo "  feat:     A new feature"
+          echo "  fix:      A bug fix"
+          echo "  docs:     Documentation only changes"
+          echo "  style:    Changes that do not affect the meaning of the code"
+          echo "  refactor: A code change that neither fixes a bug nor adds a feature"
+          echo "  test:     Adding missing tests or correcting existing tests"
+          echo "  chore:    Changes to the build process or auxiliary tools"
+          echo "  perf:     A code change that improves performance"
+          echo "  ci:       Changes to our CI configuration files and scripts"
+          echo "  build:    Changes that affect the build system or external dependencies"
+          echo "  revert:   Reverts a previous commit"
+          echo ""
+          echo "Examples:"
+          echo "  feat(auth): add login functionality"
+          echo "  fix(api): resolve user creation bug"
+          echo "  docs: update README"
+          echo ""
+          exit 1
+        fi
+        echo "✅ Commit message format is valid!"
+      fail_text: "Invalid commit message format"
