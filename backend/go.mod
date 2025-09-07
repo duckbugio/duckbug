@@ -1,4 +1,4 @@
-module github.com/fuckbug/api
+module github.com/duckbugio/duckbug
 
 go 1.24.2
 

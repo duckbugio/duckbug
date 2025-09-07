@@ -45,7 +45,7 @@ jobs:
         run: go install github.com/swaggo/swag/cmd/swag@latest
 
       - name: Generate Swagger docs
-        run: swag init -g ./cmd/fuckbug/main.go
+        run: swag init -g ./cmd/duckbug/main.go
 
       - name: Linters
         uses: golangci/golangci-lint-action@v4
@@ -74,7 +74,7 @@ jobs:
         run: go install github.com/swaggo/swag/cmd/swag@latest
 
       - name: Generate Swagger docs
-        run: swag init -g ./cmd/fuckbug/main.go
+        run: swag init -g ./cmd/duckbug/main.go
 
       - name: Unit tests
         run: go test -v -count=1 -race -timeout=1m ./...

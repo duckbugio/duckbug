@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fuckbug/api/internal/middleware"
+	"github.com/duckbugio/duckbug/internal/middleware"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )

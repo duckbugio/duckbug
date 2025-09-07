@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fuckbug/api/internal/middleware"
-	errorsGroup "github.com/fuckbug/api/internal/modules/errorsGroup"
-	"github.com/fuckbug/api/pkg/httputils"
-	"github.com/fuckbug/api/pkg/utils"
+	"github.com/duckbugio/duckbug/internal/middleware"
+	errorsGroup "github.com/duckbugio/duckbug/internal/modules/errorsGroup"
+	"github.com/duckbugio/duckbug/pkg/httputils"
+	"github.com/duckbugio/duckbug/pkg/utils"
 	v "github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )

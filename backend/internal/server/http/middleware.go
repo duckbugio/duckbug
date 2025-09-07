@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fuckbug/api/internal/server/http/handlers"
+	"github.com/duckbugio/duckbug/internal/server/http/handlers"
 )
 
 type LoggingResponseWriter struct {

@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/fuckbug/api/internal/modules/users"
-	"github.com/fuckbug/api/pkg/httputils"
+	"github.com/duckbugio/duckbug/internal/modules/users"
+	"github.com/duckbugio/duckbug/pkg/httputils"
 	v "github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )

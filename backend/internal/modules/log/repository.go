@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	loggroup "github.com/fuckbug/api/internal/modules/logGroup"
+	loggroup "github.com/duckbugio/duckbug/internal/modules/logGroup"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )

@@ -86,7 +86,7 @@ backend-migrate-new:
 
 backend-swagger:
 	@echo "📚 Generating Swagger docs..."
-	docker compose run --rm backend-lint swag init -g ./cmd/fuckbug/main.go
+	docker compose run --rm backend-lint swag init -g ./cmd/duckbug/main.go
 
 # Testing
 test: frontend-test backend-test ## Run all tests
@@ -125,7 +125,7 @@ db-reset: db-down ## Reset database (WARNING: destroys data)
 # Production
 build-production: ## Build production images
 	@echo "🏗️ Building production images..."
-	docker build -f backend/build/fuckbug/Dockerfile -t duckbug-api:latest ./backend
+	docker build -f backend/build/duckbug/Dockerfile -t duckbug-api:latest ./backend
 	docker build -f frontend/docker/production/nginx/Dockerfile -t duckbug-web:latest ./frontend
 
 # Cleanup

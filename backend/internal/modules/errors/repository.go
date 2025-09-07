@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	errorsGroup "github.com/fuckbug/api/internal/modules/errorsGroup"
+	errorsGroup "github.com/duckbugio/duckbug/internal/modules/errorsGroup"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )

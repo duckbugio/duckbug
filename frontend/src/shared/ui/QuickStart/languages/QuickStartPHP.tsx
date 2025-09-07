@@ -33,9 +33,9 @@ const QuickStartPHP: React.FC<QuickStartPHPProps> = ({dsn}) => {
 
             <CodeBlock language={language}>
                 {`
-                    FuckBug::init([
+                    DuckBug::init([
                         Provider::setup(
-                            new FuckBugProvider(
+                            new DuckBugProvider(
                                 '${dsn}',
                             )
                         ),
@@ -58,7 +58,7 @@ const QuickStartPHP: React.FC<QuickStartPHPProps> = ({dsn}) => {
                     try {
                         $this->functionFailsForSure();
                     } catch (\\Throwable $exception) {
-                        FuckBug::capture($exception);
+                        DuckBug::capture($exception);
                     }
                 `}
             </CodeBlock>

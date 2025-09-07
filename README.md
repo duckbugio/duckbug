@@ -172,7 +172,7 @@ docker compose up -d backend frontend postgres
 make build-production
 
 # Или вручную
-docker build -f backend/build/fuckbug/Dockerfile -t duckbug-api:latest ./backend
+docker build -f backend/build/duckbug/Dockerfile -t duckbug-api:latest ./backend
 docker build -f frontend/docker/production/nginx/Dockerfile -t duckbug-web:latest ./frontend
 ```
 

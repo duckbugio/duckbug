@@ -3,14 +3,14 @@ package server
 import (
 	"net/http"
 
-	"github.com/fuckbug/api/internal/modules/app"
-	"github.com/fuckbug/api/internal/modules/errors"
-	errorsGroup "github.com/fuckbug/api/internal/modules/errorsGroup"
-	"github.com/fuckbug/api/internal/modules/log"
-	logGroup "github.com/fuckbug/api/internal/modules/logGroup"
-	"github.com/fuckbug/api/internal/modules/project"
-	"github.com/fuckbug/api/internal/modules/users"
-	"github.com/fuckbug/api/internal/server/http/handlers"
+	"github.com/duckbugio/duckbug/internal/modules/app"
+	"github.com/duckbugio/duckbug/internal/modules/errors"
+	errorsGroup "github.com/duckbugio/duckbug/internal/modules/errorsGroup"
+	"github.com/duckbugio/duckbug/internal/modules/log"
+	logGroup "github.com/duckbugio/duckbug/internal/modules/logGroup"
+	"github.com/duckbugio/duckbug/internal/modules/project"
+	"github.com/duckbugio/duckbug/internal/modules/users"
+	"github.com/duckbugio/duckbug/internal/server/http/handlers"
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 )

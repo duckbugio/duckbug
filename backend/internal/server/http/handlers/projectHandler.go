@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fuckbug/api/internal/middleware"
-	"github.com/fuckbug/api/internal/modules/project"
-	"github.com/fuckbug/api/pkg/httputils"
+	"github.com/duckbugio/duckbug/internal/middleware"
+	"github.com/duckbugio/duckbug/internal/modules/project"
+	"github.com/duckbugio/duckbug/pkg/httputils"
 	v "github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )

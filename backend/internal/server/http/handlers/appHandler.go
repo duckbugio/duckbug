@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/fuckbug/api/internal/modules/app"
+	"github.com/duckbugio/duckbug/internal/modules/app"
 	"github.com/gorilla/mux"
 )
 

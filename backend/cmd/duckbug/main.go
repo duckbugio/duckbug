@@ -11,35 +11,35 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	_ "github.com/fuckbug/api/docs" // for swagger
+	_ "github.com/duckbugio/duckbug/docs" // for swagger
 
-	"github.com/fuckbug/api/internal/modules/app"
-	"github.com/fuckbug/api/internal/storage/sql"
+	"github.com/duckbugio/duckbug/internal/modules/app"
+	"github.com/duckbugio/duckbug/internal/storage/sql"
 
-	"github.com/fuckbug/api/internal/logger"
-	moduleError "github.com/fuckbug/api/internal/modules/errors"
-	moduleGroupError "github.com/fuckbug/api/internal/modules/errorsGroup"
-	moduleLog "github.com/fuckbug/api/internal/modules/log"
-	moduleGroupLog "github.com/fuckbug/api/internal/modules/logGroup"
-	moduleProject "github.com/fuckbug/api/internal/modules/project"
-	moduleUser "github.com/fuckbug/api/internal/modules/users"
-	server "github.com/fuckbug/api/internal/server/http"
+	"github.com/duckbugio/duckbug/internal/logger"
+	moduleError "github.com/duckbugio/duckbug/internal/modules/errors"
+	moduleGroupError "github.com/duckbugio/duckbug/internal/modules/errorsGroup"
+	moduleLog "github.com/duckbugio/duckbug/internal/modules/log"
+	moduleGroupLog "github.com/duckbugio/duckbug/internal/modules/logGroup"
+	moduleProject "github.com/duckbugio/duckbug/internal/modules/project"
+	moduleUser "github.com/duckbugio/duckbug/internal/modules/users"
+	server "github.com/duckbugio/duckbug/internal/server/http"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "configs/fuckbug/config.json", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "configs/duckbug/config.json", "Path to configuration file")
 }
 
 const serverShutdownTimeout = 3 * time.Second
 
-// @title FuckBug API
+// @title DuckBug API
 // @version 1.0.0
-// @description This is FuckBug.io API.
-// @termsOfService https://fuckbug.io/terms/
+// @description This is DuckBug.io API.
+// @termsOfService https://duckbug.io/terms/
 // @contact.name API Support
-// @contact.email support@fuckbug.io
+// @contact.email support@duckbug.io
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @securityDefinitions.apikey BearerAuth
