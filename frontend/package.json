@@ -23,7 +23,6 @@
     "url": "https://github.com/gravity-ui/gravity-ui-vite-example/issues"
   },
   "scripts": {
-    "prepare": "cd .. && husky install frontend/.husky",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -64,12 +63,12 @@
     "@gravity-ui/prettier-config": "^1.1.0",
     "@gravity-ui/stylelint-config": "^4.0.0",
     "@gravity-ui/tsconfig": "^1.0.0",
+    "@types/node": "^24.3.1",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
     "esbuild-sass-plugin": "^2.16.0",
     "eslint": "^8.53.0",
-    "husky": "^8.0.3",
     "sass": "^1.68.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",

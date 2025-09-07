@@ -55,30 +55,30 @@ frontend-install:
 
 frontend-lint:
 	@echo "🔍 Running frontend linters..."
-	docker compose run --rm frontend-cli npm run lint:js
-	docker compose run --rm frontend-cli npm run lint:styles
-	docker compose run --rm frontend-cli npm run lint:prettier
+	docker compose run --rm -T frontend-cli npm run lint:js
+	docker compose run --rm -T frontend-cli npm run lint:styles
+	docker compose run --rm -T frontend-cli npm run lint:prettier
 
 frontend-lint-fix:
 	@echo "🔧 Fixing frontend linting issues..."
-	docker compose run --rm frontend-cli npm run lint:fix
+	docker compose run --rm -T frontend-cli npm run lint:fix
 
 frontend-test:
 	@echo "🧪 Running frontend tests..."
-	docker compose run --rm frontend-cli npm run test:ci
+	docker compose run --rm -T frontend-cli npm run test:ci
 
 frontend-build:
 	@echo "🏗️ Building frontend..."
-	docker compose run --rm frontend-cli npm run build
+	docker compose run --rm -T frontend-cli npm run build
 
 # Backend Commands
 backend-test:
 	@echo "🧪 Running backend tests..."
-	docker compose run --rm backend-lint go test -v -count=1 -race -timeout=1m ./...
+	docker compose run --rm -T backend-lint go test -v -count=1 -race -timeout=1m ./...
 
 backend-lint:
 	@echo "🔍 Running backend linter..."
-	docker compose run --rm backend-lint
+	docker compose run --rm -T backend-lint
 
 backend-migrate-new:
 	@echo "📝 Creating new migration..."

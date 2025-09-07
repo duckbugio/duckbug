@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Запускаем линтеры для обеих частей проекта
+make lint-frontend
+make lint-backend
+
+echo "✅ Pre-commit checks passed!"

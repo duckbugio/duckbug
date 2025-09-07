@@ -23,8 +23,22 @@ export const Layout: FC<LayoutProps> = ({setTheme}) => {
 
     const [isAuth, isInitialized, logout] = useUnit([$accessToken, $isAuthInitialized, $logout]);
 
-    if (isInitialized && !isAuth && location.pathname !== '/login') {
+    if (
+        isInitialized &&
+        !isAuth &&
+        location.pathname !== '/login' &&
+        location.pathname !== '/signup'
+    ) {
         return <Navigate to="/login" replace />;
+    }
+
+    // Если пользователь не авторизован (например, на странице логина), показываем только контент без меню
+    if (isInitialized && !isAuth) {
+        return (
+            <Wrapper setTheme={setTheme}>
+                <Outlet />
+            </Wrapper>
+        );
     }
 
     return (

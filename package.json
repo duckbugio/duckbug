@@ -1,0 +1,33 @@
+{
+  "name": "duckbug",
+  "version": "1.0.0",
+  "description": "DuckBug - Error tracking and logging platform",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "make lint",
+    "lint:frontend": "make lint-frontend",
+    "lint:backend": "make lint-backend",
+    "lint:fix": "make lint-fix",
+    "test": "make test",
+    "test:frontend": "make test-frontend",
+    "test:backend": "make test-backend",
+    "build": "make build",
+    "build:frontend": "make build-frontend",
+    "dev": "make up",
+    "dev:down": "make down",
+    "dev:restart": "make restart",
+    "dev:clean": "make clean",
+    "dev:init": "make init"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

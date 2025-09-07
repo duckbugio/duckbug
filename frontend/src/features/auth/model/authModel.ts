@@ -92,3 +92,10 @@ sample({
     fn: () => true,
     target: $isAuthInitialized,
 });
+
+// Устанавливаем isAuthInitialized в true при инициализации, даже если токена нет
+sample({
+    clock: initAuth,
+    fn: () => true,
+    target: $isAuthInitialized,
+});
