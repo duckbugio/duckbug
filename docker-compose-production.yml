@@ -1,0 +1,110 @@
+services:
+  # Reverse proxy
+  traefik:
+    image: traefik:3.3
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --entryPoints.web.address=:80
+      - --entryPoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme-data:/acme.json
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+
+  # Backend API
+  backend:
+    image: ${REGISTRY}/duckbug-api:${IMAGE_TAG}
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - API_PORT=8080
+    networks:
+      - traefik-public
+      - backend-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)
+      - traefik.http.routers.backend.entryPoints=websecure
+      - traefik.http.routers.backend.tls.certresolver=letsencrypt
+      - traefik.http.services.backend.loadBalancer.server.port=8080
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+
+  # Frontend Web
+  frontend:
+    image: ${REGISTRY}/duckbug-web:${IMAGE_TAG}
+    environment:
+      - REACT_APP_API_BASE_URL=https://api.${DOMAIN}
+    networks:
+      - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
+      - traefik.http.routers.frontend.entryPoints=websecure
+      - traefik.http.routers.frontend.tls.certresolver=letsencrypt
+      - traefik.http.services.frontend.loadBalancer.server.port=80
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.regex=^(https?://)www.${DOMAIN}/(.*)$$
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.replacement=$${1}${DOMAIN}/$${2}
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.permanent=true
+      - traefik.http.routers.frontend.middlewares=frontend-redirect
+    restart: unless-stopped
+
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-duckbug}
+      POSTGRES_USER: ${POSTGRES_USER:-duckbug}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-duckbug}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  traefik-public:
+    name: traefik-public
+  backend-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  acme-data:

@@ -1,0 +1,135 @@
+services:
+  # Reverse proxy
+  traefik:
+    image: traefik:3.3
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --entryPoints.http.address=:80
+      - --entryPoints.websecure.address=:443
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+
+  # Backend API
+  backend:
+    container_name: duckbug-api
+    build:
+      context: ./backend
+      dockerfile: ./deployments/development/Dockerfile
+    volumes:
+      - ./backend:/app
+    environment:
+      - AIR_WORKSPACE_ROOT=/app
+      - GOPATH=/go
+      - API_PORT=8080
+    command: air -c .air.toml
+    ports:
+      - "8080:8080"
+      - "2345:2345"  # Delve debugger
+    networks:
+      - traefik-public
+      - backend-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.backend.rule=Host(`api.duckbug.localhost`)
+      - traefik.http.routers.backend.entryPoints=http
+      - traefik.http.services.backend.loadBalancer.server.port=8080
+
+  # Frontend Web
+  frontend:
+    build:
+      context: ./frontend/docker/development/nginx
+    networks:
+      - traefik-public
+      - frontend-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.frontend.rule=Host(`duckbug.localhost`) || Host(`www.duckbug.localhost`)
+      - traefik.http.routers.frontend.entryPoints=http
+      - traefik.http.services.frontend.loadBalancer.server.port=80
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.regex=^(https?://)www.duckbug.localhost/(.*)$$
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.replacement=$${1}duckbug.localhost/$${2}
+      - traefik.http.middlewares.frontend-redirect.redirectRegex.permanent=true
+      - traefik.http.routers.frontend.middlewares=frontend-redirect
+
+  # Frontend development server
+  frontend-dev:
+    build:
+      context: ./frontend/docker/development/node
+    environment:
+      WDS_SOCKET_PORT: 0
+      REACT_APP_API_BASE_URL: 'http://api.duckbug.localhost'
+    volumes:
+      - ./frontend:/app
+    command: >
+      bash -c 'until [ -f .ready ]; do sleep 1 ; done &&
+      npm run dev'
+    tty: true
+    networks:
+      - frontend-network
+      - backend-network
+
+  # Frontend CLI for linting/testing
+  frontend-cli:
+    build:
+      context: ./frontend/docker/development/node
+    volumes:
+      - ./frontend:/app
+    networks:
+      - frontend-network
+
+  # Backend linter
+  backend-lint:
+    image: golangci/golangci-lint:v1.64.2
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: golangci-lint run -v
+    networks:
+      - backend-network
+
+  # Database (if needed)
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: duckbug
+      POSTGRES_USER: duckbug
+      POSTGRES_PASSWORD: duckbug
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  # Redis (if needed)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend-network
+
+networks:
+  traefik-public:
+    name: traefik-public
+  backend-network:
+    driver: bridge
+  frontend-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
