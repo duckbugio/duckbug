@@ -157,7 +157,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          file: ./backend/build/fuckbug/Dockerfile
+          file: ./backend/build/duckbug/Dockerfile
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ env.IMAGE_VERSION }}
 
@@ -231,4 +231,4 @@ jobs:
           PORT: ${{ vars.PRODUCTION_PORT }}
           PROJECT_NAME: ${{ vars.PROJECT_NAME }}
           DOMAIN: ${{ vars.DOMAIN }}
-          REACT_APP_API_BASE_URL: 'https://api.fuckbug.io/v1'
+          REACT_APP_API_BASE_URL: 'https://duckbug.io/api/v1'
