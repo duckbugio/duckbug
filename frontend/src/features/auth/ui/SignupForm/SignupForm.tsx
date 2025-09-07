@@ -1,0 +1,74 @@
+import {useForm} from 'react-hook-form';
+import {Box, Button, Flex, TextInput, Text as GravityText} from '@gravity-ui/uikit';
+import {SignupCredentials} from '@/features/auth/types';
+
+type SignupFormProps = {
+    onSubmit: (payload: SignupCredentials) => void;
+};
+
+export const SignupForm = ({onSubmit}: SignupFormProps) => {
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+    } = useForm<SignupCredentials>({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    });
+
+    return (
+        <Box maxWidth="400px">
+            <GravityText variant="header-2" as="h2">
+                Регистрация
+            </GravityText>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Flex direction="column" gap={3}>
+                    <div>
+                        <GravityText as="label" variant="subheader-2">
+                            Email
+                        </GravityText>
+                        <TextInput
+                            {...register('email', {
+                                required: 'Обязательное поле',
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: 'Некорректный email',
+                                },
+                            })}
+                            size="l"
+                            placeholder="your@email.com"
+                            error={errors.email?.message}
+                            hasClear
+                        />
+                    </div>
+
+                    <div>
+                        <GravityText as="label" variant="subheader-2">
+                            Пароль
+                        </GravityText>
+                        <TextInput
+                            {...register('password', {
+                                required: 'Обязательное поле',
+                                minLength: {
+                                    value: 6,
+                                    message: 'Минимум 6 символов',
+                                },
+                            })}
+                            type="password"
+                            size="l"
+                            placeholder="Введите пароль"
+                            error={errors.password?.message}
+                            hasClear
+                        />
+                    </div>
+
+                    <Button type="submit" size="l" view="action">
+                        Зарегистрироваться
+                    </Button>
+                </Flex>
+            </form>
+        </Box>
+    );
+};

@@ -36,12 +36,8 @@ services:
     networks:
       - traefik-public
       - backend-network
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik-public
-      - traefik.http.routers.backend.rule=Host(`api.duckbug.localhost`)
-      - traefik.http.routers.backend.entryPoints=http
-      - traefik.http.services.backend.loadBalancer.server.port=8080
+      - frontend-network
+    # Backend is accessed through frontend nginx proxy, no direct Traefik routing needed
 
   # Frontend Web
   frontend:
@@ -67,7 +63,7 @@ services:
       context: ./frontend/docker/development/node
     environment:
       - WDS_SOCKET_PORT=${WDS_SOCKET_PORT:-0}
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://api.duckbug.localhost}
+          - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://duckbug.localhost/api/v1}
     volumes:
       - ./frontend:/app
     command: >

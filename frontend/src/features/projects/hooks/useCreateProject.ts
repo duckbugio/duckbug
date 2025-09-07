@@ -13,7 +13,7 @@ export const useCreateProject = (onProjectCreated: (project: Project) => void) =
                 onProjectCreated(result);
             }
             setLoading(false);
-        } catch (error) {
+        } catch {
             // setError(error.message);
             setLoading(false);
         }

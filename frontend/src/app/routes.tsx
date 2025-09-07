@@ -7,6 +7,7 @@ import ErrorGroupPage from '@/pages/ErrorGroupPage/ErrorGroupPage';
 import ProjectPage from '@/pages/ProjectPage/ProjectPage';
 import LogGroupPage from '@/pages/LogGroupPage/LogGroupPage';
 import {LoginPage} from '@/pages/LoginPage/LoginPage';
+import {SignupPage} from '@/pages/SignupPage/SignupPage';
 
 export const routes: RouteObject[] = [
     {
@@ -16,6 +17,10 @@ export const routes: RouteObject[] = [
     {
         path: '/login',
         element: <LoginPage />,
+    },
+    {
+        path: '/signup',
+        element: <SignupPage />,
     },
     {
         path: '/dashboard',

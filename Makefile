@@ -164,7 +164,7 @@ logs-db: ## Show database logs
 dev: init ## Start development environment
 	@echo "🎉 DuckBug development environment is running!"
 	@echo "🌐 Frontend: http://duckbug.localhost"
-	@echo "🔧 Backend API: http://api.duckbug.localhost"
+	@echo "🔧 Backend API: http://duckbug.localhost/api/v1"
 	@echo "📊 Database: localhost:5432"
 
 # Quick commands

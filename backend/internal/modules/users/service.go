@@ -62,8 +62,12 @@ func (s *service) Login(ctx context.Context, req *Login) (*Token, error) {
 		return nil, err
 	}
 
-	if user == nil || !checkPassword(req.Password, user.Password) {
+	if user == nil {
 		return nil, errors.New("user not found")
+	}
+
+	if !checkPassword(req.Password, user.Password) {
+		return nil, errors.New("invalid credentials")
 	}
 
 	accessToken, err := generateJWT(user.ID, s.jwtKey)

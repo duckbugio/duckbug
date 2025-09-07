@@ -41,7 +41,7 @@ export const apiClient = async (input: RequestInfo, init?: RequestInit) => {
                         headers,
                     });
                 }
-            } catch (e) {
+            } catch {
                 // console.error('Refresh token failed', e);
             }
         }

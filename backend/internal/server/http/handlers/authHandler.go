@@ -86,7 +86,12 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.Login(r.Context(), &req)
 	if err != nil {
-		httputils.RespondWithPlainError(w, http.StatusInternalServerError, err.Error())
+		// Return 401 for authentication errors, 500 for server errors
+		status := http.StatusInternalServerError
+		if err.Error() == "user not found" || err.Error() == "invalid credentials" {
+			status = http.StatusUnauthorized
+		}
+		httputils.RespondWithPlainError(w, status, err.Error())
 		return
 	}
 

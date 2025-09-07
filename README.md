@@ -34,7 +34,7 @@ make dev
 
 После запуска приложение будет доступно по адресам:
 - **Frontend**: http://duckbug.localhost
-- **Backend API**: http://api.duckbug.localhost
+- **Backend API**: http://duckbug.localhost/api/v1
 - **Database**: localhost:5432
 
 ### Переменные окружения
@@ -268,7 +268,7 @@ make deploy-production
 ## 📚 API Документация
 
 После запуска backend, Swagger документация доступна по адресу:
-http://api.duckbug.localhost/swagger/
+http://duckbug.localhost/api/v1/swagger/
 
 ## 🗄️ База данных
 
