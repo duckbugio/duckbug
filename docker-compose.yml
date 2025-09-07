@@ -112,15 +112,6 @@ services:
     networks:
       - backend-network
 
-  # Redis (if needed)
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - backend-network
 
 networks:
   traefik-public:
@@ -132,4 +123,3 @@ networks:
 
 volumes:
   postgres_data:
-  redis_data:

@@ -23,7 +23,7 @@
     "url": "https://github.com/gravity-ui/gravity-ui-vite-example/issues"
   },
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install frontend/.husky",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",

@@ -105,14 +105,14 @@ build-frontend: frontend-build ## Build frontend only
 
 # Database
 db-up: ## Start database services
-	docker compose up -d postgres redis
+	docker compose up -d postgres
 
 db-down: ## Stop database services
-	docker compose stop postgres redis
+	docker compose stop postgres
 
 db-reset: db-down ## Reset database (WARNING: destroys data)
-	docker volume rm duckbug_postgres_data duckbug_redis_data 2>/dev/null || true
-	docker compose up -d postgres redis
+	docker volume rm duckbug_postgres_data 2>/dev/null || true
+	docker compose up -d postgres
 
 # Production
 build-production: ## Build production images
@@ -142,7 +142,7 @@ logs-frontend: ## Show frontend logs
 	docker compose logs -f frontend frontend-dev
 
 logs-db: ## Show database logs
-	docker compose logs -f postgres redis
+	docker compose logs -f postgres
 
 # Development shortcuts
 dev: init ## Start development environment
@@ -150,11 +150,10 @@ dev: init ## Start development environment
 	@echo "🌐 Frontend: http://duckbug.localhost"
 	@echo "🔧 Backend API: http://api.duckbug.localhost"
 	@echo "📊 Database: localhost:5432"
-	@echo "🔴 Redis: localhost:6379"
 
 # Quick commands
 quick-start: ## Quick start (minimal setup)
-	docker compose up -d traefik backend frontend frontend-dev postgres redis
+	docker compose up -d traefik backend frontend frontend-dev postgres
 	@make frontend-ready
 
 # Health checks

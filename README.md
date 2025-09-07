@@ -32,7 +32,6 @@ make dev
 - **Frontend**: http://duckbug.localhost
 - **Backend API**: http://api.duckbug.localhost
 - **Database**: localhost:5432
-- **Redis**: localhost:6379
 
 ## 📋 Доступные команды
 
@@ -222,9 +221,6 @@ docker compose up -d postgres
 ```bash
 # Подключиться к PostgreSQL
 docker compose exec postgres psql -U duckbug -d duckbug
-
-# Подключиться к Redis
-docker compose exec redis redis-cli
 ```
 
 ## 🐛 Отладка
