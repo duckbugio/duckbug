@@ -27,12 +27,37 @@ commit-msg:
     commit-msg-check:
       run: |
         commit_regex='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,50}'
-        commit_msg_file="$LEFTHOOK_COMMIT_MSG_FILE"
-        if [ -z "$commit_msg_file" ]; then
-          echo "❌ No commit message file provided!"
-          exit 1
+        # Try to find commit message file in common locations
+        commit_msg_file=""
+        if [ -f ".git/COMMIT_EDITMSG" ]; then
+          commit_msg_file=".git/COMMIT_EDITMSG"
+        elif [ -f ".git/COMMIT_MSG" ]; then
+          commit_msg_file=".git/COMMIT_MSG"
+        else
+          # Try to get the latest commit message from git log
+          commit_msg=$(git log -1 --pretty=%B)
+          if [ -n "$commit_msg" ]; then
+            echo "$commit_msg" | grep -qE "$commit_regex"
+            if [ $? -eq 0 ]; then
+              echo "✅ Commit message format is valid!"
+              exit 0
+            else
+              echo "❌ Invalid commit message format!"
+              echo ""
+              echo "Format: type(scope): description"
+              echo ""
+              echo "Your message: $commit_msg"
+              exit 1
+            fi
+          else
+            echo "❌ Could not find commit message!"
+            exit 1
+          fi
         fi
-        commit_msg=$(cat "$commit_msg_file")
+        
+        if [ -n "$commit_msg_file" ]; then
+          commit_msg=$(cat "$commit_msg_file")
+        fi
         if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
           echo "❌ Invalid commit message format!"
           echo ""
