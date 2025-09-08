@@ -27,7 +27,12 @@ commit-msg:
     commit-msg-check:
       run: |
         commit_regex='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,50}'
-        commit_msg=$(cat "$LEFTHOOK_COMMIT_MSG_FILE")
+        commit_msg_file="$LEFTHOOK_COMMIT_MSG_FILE"
+        if [ -z "$commit_msg_file" ]; then
+          echo "❌ No commit message file provided!"
+          exit 1
+        fi
+        commit_msg=$(cat "$commit_msg_file")
         if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
           echo "❌ Invalid commit message format!"
           echo ""
@@ -51,6 +56,7 @@ commit-msg:
           echo "  fix(api): resolve user creation bug"
           echo "  docs: update README"
           echo ""
+          echo "Your message: $commit_msg"
           exit 1
         fi
         echo "✅ Commit message format is valid!"
