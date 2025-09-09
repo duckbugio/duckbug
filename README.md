@@ -228,11 +228,6 @@ docker compose -f docker-compose-production.yml pull
 docker compose -f docker-compose-production.yml up -d
 ```
 
-Или через Makefile:
-```bash
-make deploy-production
-```
-
 **Особенности production системы:**
 - 🔒 **Traefik** - reverse proxy с автоматическими SSL сертификатами
 - 🌐 **HTTPS** - автоматические Let's Encrypt сертификаты

@@ -1,6 +1,6 @@
 # DuckBug - Unified Development Environment
 
-.PHONY: help init up down restart clean test lint build deploy
+.PHONY: help init up down restart clean test lint deploy
 
 # Default target
 help: ## Show this help message
@@ -122,20 +122,6 @@ db-reset: db-down ## Reset database (WARNING: destroys data)
 	docker volume rm duckbug_postgres_data 2>/dev/null || true
 	docker compose up -d postgres
 
-# Production
-build-production: ## Build production images
-	@echo "🏗️ Building production images..."
-	docker build -f backend/build/duckbug/Dockerfile -t duckbug-api:latest ./backend
-	docker build -f frontend/docker/production/nginx/Dockerfile -t duckbug-web:latest ./frontend
-
-build-unified: ## Build unified image (frontend + backend)
-	@echo "🏗️ Building unified DuckBug image..."
-	docker build -f deploy/production/Dockerfile -t duckbug:latest .
-
-deploy-production: ## Deploy to production using docker-compose
-	@echo "🚀 Deploying to production..."
-	cd deploy/production && docker compose -f docker-compose-production.yml pull && docker compose -f docker-compose-production.yml up -d
-
 # Cleanup
 clean: ## Clean up development environment
 	@echo "🧹 Cleaning up..."
@@ -180,3 +166,20 @@ health: ## Check service health
 	@echo "🌐 Testing endpoints..."
 	@curl -s http://localhost/api/health || echo "❌ Backend not responding"
 	@curl -s http://localhost/ || echo "❌ Frontend not responding"
+
+deploy:
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'docker login -u=${DOCKERHUB_USER} -p=${DOCKERHUB_PASSWORD} ${REGISTRY}'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'rm -rf ${PROJECT_NAME}/v_${BUILD_NUMBER}'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'mkdir -p ${PROJECT_NAME}/v_${BUILD_NUMBER}'
+
+	scp -o StrictHostKeyChecking=no -P ${PORT} deploy/production/docker-compose-production.yml deploy@${HOST}:${PROJECT_NAME}/v_${BUILD_NUMBER}/docker-compose.yml
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && echo "COMPOSE_PROJECT_NAME=duckbug" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && echo "REGISTRY=${REGISTRY}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && echo "IMAGE_TAG=${IMAGE_TAG}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && echo "DOMAIN=${DOMAIN}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && echo "REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}" >> .env'
+
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && docker compose pull'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd ${PROJECT_NAME}/v_${BUILD_NUMBER} && docker compose up --build --remove-orphans -d'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'rm -f ${PROJECT_NAME}/${PROJECT_NAME}'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'ln -sr ${PROJECT_NAME}/v_${BUILD_NUMBER} ${PROJECT_NAME}/${PROJECT_NAME}'

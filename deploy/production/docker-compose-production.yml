@@ -1,76 +1,22 @@
 services:
-  # Reverse proxy
-  traefik:
-    image: traefik:3.3
-    command:
-      - --providers.docker=true
-      - --providers.docker.exposedByDefault=false
-      - --entryPoints.web.address=:80
-      - --entryPoints.websecure.address=:443
-      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
-      - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      - traefik-public
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - acme-data:/acme.json
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik-public
-
-  # DuckBug Application (Frontend + Backend)
   duckbug:
+    container_name: duckbug
     image: ${REGISTRY}/duckbug:${IMAGE_TAG}
     environment:
-      - POSTGRES_DSN=${DATABASE_URL}
-      - DOMAIN=${DOMAIN}
+      - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
     networks:
       - traefik-public
-      - backend-network
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
-      - traefik.http.routers.duckbug.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
-      - traefik.http.routers.duckbug.entryPoints=websecure
-      - traefik.http.routers.duckbug.tls.certresolver=letsencrypt
-      - traefik.http.services.duckbug.loadBalancer.server.port=80
-      - traefik.http.middlewares.duckbug-redirect.redirectRegex.regex=^(https?://)www.${DOMAIN}/(.*)$$
-      - traefik.http.middlewares.duckbug-redirect.redirectRegex.replacement=$${1}${DOMAIN}/$${2}
-      - traefik.http.middlewares.duckbug-redirect.redirectRegex.permanent=true
-      - traefik.http.routers.duckbug.middlewares=duckbug-redirect
+      - traefik.http.routers.duckbug.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.duckbug.middlewares=secure-headers
+      - traefik.http.routers.duckbug.entryPoints=https
+      - traefik.http.routers.duckbug.tls=true
+      - traefik.http.routers.duckbug.tls.certResolver=letsEncrypt
     restart: unless-stopped
-    depends_on:
-      - postgres
-
-  # Database
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-duckbug}
-      POSTGRES_USER: ${POSTGRES_USER:-duckbug}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - backend-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-duckbug}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 
 networks:
   traefik-public:
     name: traefik-public
-  backend-network:
-    driver: bridge
-
-volumes:
-  postgres_data:
-  acme-data:

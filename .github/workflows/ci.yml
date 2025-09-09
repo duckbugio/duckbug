@@ -188,9 +188,4 @@ jobs:
           known_hosts: ${{ vars.PRODUCTION_HOST }}
 
       - name: Deploy unified application
-        run: |
-          ssh -o StrictHostKeyChecking=no deploy@${{ vars.PRODUCTION_HOST }} -p ${{ vars.PRODUCTION_PORT }} 'docker login -u=${{ env.REGISTRY_USERNAME }} -p=${{ env.REGISTRY_PASSWORD }} ${{ env.REGISTRY }}'
-          ssh -o StrictHostKeyChecking=no deploy@${{ vars.PRODUCTION_HOST }} -p ${{ vars.PRODUCTION_PORT }} 'cd ${{ vars.PROJECT_NAME }}/deploy/production && docker compose -f docker-compose-production.yml pull && docker compose -f docker-compose-production.yml up -d'
-        env:
-          REGISTRY_USERNAME: ${{ env.REGISTRY_USERNAME }}
-          REGISTRY_PASSWORD: ${{ env.REGISTRY_PASSWORD }}
+        run: make deploy
