@@ -33,6 +33,7 @@ export const getLogGroupsTableColumns = (
     {
         id: 'message',
         name: 'Лог',
+        width: '100%',
         template: (group: LogGroup) => {
             return (
                 <>
@@ -40,6 +41,7 @@ export const getLogGroupsTableColumns = (
                         title={group.message}
                         onClick={() => navigate(getLogGroupPath(projectId, group.id))}
                         href={''}
+                        className="line3"
                     >
                         {group.message}
                     </Link>

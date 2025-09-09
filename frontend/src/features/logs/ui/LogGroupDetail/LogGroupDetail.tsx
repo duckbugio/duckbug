@@ -20,7 +20,9 @@ export const LogGroupDetail = ({id}: LogGroupDetailProps) => {
 
     return (
         <>
-            <GravityText variant="header-1">{group.message}</GravityText>
+            <GravityText variant="header-1" className="line3">
+                {group.message}
+            </GravityText>
             <div style={{margin: '8px 0 16px 0'}}>{group.level}</div>
             <GravityText>
                 <b>Обнаружено</b>: {formatDateTime(group.firstSeenAt)}

@@ -29,9 +29,15 @@ export const Wrapper: React.FC<AppProps> = ({children, setTheme}) => {
         <div className={b()}>
             <div
                 className={b('theme-button')}
-                style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}
+                style={{
+                    display: 'flex',
+                    gap: '8px',
+                    flexWrap: 'wrap',
+                    height: '56px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
             >
-                {/* Показываем колокольчик только авторизованным пользователям */}
                 {isInitialized && isAuth && (
                     <Button size="l" view="outlined">
                         <Icon data={BellDot} />

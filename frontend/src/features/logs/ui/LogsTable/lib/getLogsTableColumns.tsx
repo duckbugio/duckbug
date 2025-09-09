@@ -10,7 +10,9 @@ export const getLogsTableColumns = (): TableColumnConfig<Log>[] => [
             <>
                 <GravityText>
                     <Label theme={'info'}>{formatDateTimeMilliseconds(log.time)}</Label>
-                    <GravityText style={{marginLeft: '4px'}}>{log.message}</GravityText>
+                    <GravityText className="line3" style={{marginLeft: '4px'}}>
+                        {log.message}
+                    </GravityText>
                 </GravityText>
             </>
         ),

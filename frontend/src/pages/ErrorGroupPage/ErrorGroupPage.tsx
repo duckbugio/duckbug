@@ -46,14 +46,26 @@ const ErrorGroupPage = () => {
     return (
         <PageContainer>
             <div className="g-row g-row_s_5">
-                <div className="g-col g-col_size_8">
+                <div
+                    className="g-col g-col_size_8"
+                    style={{
+                        height: 'calc(100vh - 56px)',
+                        overflowY: 'auto',
+                    }}
+                >
                     <ErrorGroupDetail id={groupId} />
 
                     <Divider style={{margin: '16px 0'}} />
 
                     <ErrorDetail id={errorId} />
                 </div>
-                <div className="g-col g-col_size_4">
+                <div
+                    className="g-col g-col_size_4"
+                    style={{
+                        height: 'calc(100vh - 56px)',
+                        overflowY: 'auto',
+                    }}
+                >
                     {stats && (
                         <>
                             <div

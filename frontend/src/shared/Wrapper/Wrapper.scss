@@ -5,12 +5,11 @@ $block: '.wrapper';
     flex-direction: column;
     align-items: center;
     min-height: 100%;
-    padding: 20px;
+    padding: 0 20px;
     box-sizing: border-box;
 
     &__theme-button {
         align-self: flex-end;
-        margin-bottom: 20px;
     }
 
     &__layout {
@@ -18,7 +17,6 @@ $block: '.wrapper';
         flex-direction: column;
         align-items: center;
         flex: 1;
-        margin-bottom: 56px;
         width: 100%;
     }
 
