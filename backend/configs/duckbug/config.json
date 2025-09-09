@@ -6,5 +6,6 @@
   "postgres": {
     "dsn": "host=postgres port=5432 user=duckbug password=duckbug dbname=duckbug sslmode=disable"
   },
-  "domain": "duckbug.io"
+  "domain": "duckbug.io",
+  "jwt": { "secret": "teststringjwt" }
 }

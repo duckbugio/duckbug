@@ -197,3 +197,7 @@ jobs:
           PROJECT_NAME: ${{ vars.PROJECT_NAME }}
           DOMAIN: ${{ vars.DOMAIN }}
           REACT_APP_API_BASE_URL: 'https://duckbug.io/api/v1'
+          # Backend secrets/vars
+          POSTGRES_DSN: ${{ secrets.POSTGRES_DSN }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          LOGGER_LEVEL: ${{ vars.LOGGER_LEVEL }}

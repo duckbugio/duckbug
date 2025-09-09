@@ -76,7 +76,8 @@ func main() {
 		return
 	}
 
-	jwtKey := []byte("teststringjwt") // todo
+	secret := config.Jwt.Secret
+	jwtKey := []byte(secret)
 
 	appService := app.New(appLogger)
 	userService := moduleUser.NewService(moduleUser.NewRepository(db, appLogger), jwtKey, appLogger)
