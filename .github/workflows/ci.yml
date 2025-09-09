@@ -189,3 +189,12 @@ jobs:
 
       - name: Deploy unified application
         run: make deploy
+        env:
+          DOCKERHUB_USER: ${{ env.REGISTRY_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ env.REGISTRY_PASSWORD }}
+          BUILD_NUMBER: ${GITHUB_RUN_NUMBER}
+          HOST: ${{ vars.PRODUCTION_HOST }}
+          PORT: ${{ vars.PRODUCTION_PORT }}
+          PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+          DOMAIN: ${{ vars.DOMAIN }}
+          REACT_APP_API_BASE_URL: 'https://duckbug.io/api/v1'
