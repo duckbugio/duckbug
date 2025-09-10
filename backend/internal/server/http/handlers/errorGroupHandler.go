@@ -35,6 +35,8 @@ func RegisterErrorGroupHandlers(
 
 	routerV1.HandleFunc("", h.GetAll).Methods(http.MethodGet)
 	routerV1.HandleFunc("/{id}", h.GetByID).Methods(http.MethodGet)
+	routerV1.HandleFunc("/{id}/status", h.UpdateStatus).Methods(http.MethodPatch)
+	routerV1.HandleFunc("/status:batch", h.BatchUpdateStatus).Methods(http.MethodPost)
 }
 
 // GetByID godoc
@@ -74,13 +76,14 @@ func (h *errorGroupHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param timeFrom query int false "Time errors from"
 // @Param timeTo query int false "Time errors to"
 // @Param search query string false "Search in message field"
+// @Param status query string false "Filter by status"
 // @Param sort query string false "Sort order (asc or desc)" default(desc) Enums(asc, desc)
 // @Param limit query int false "Items per page" default(50)
 // @Param offset query int false "Offset for pagination" default(0)
 // @Success 200 {object} errorsgroup.EntityList "Successfully retrieved list of errors"
 // @Security BearerAuth
 // @Router /v1/error-groups [get].
-func (h *errorGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *errorGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) { //nolint:dupl
 	queryParams := r.URL.Query()
 
 	limit, err := strconv.Atoi(queryParams.Get("limit"))
@@ -111,6 +114,7 @@ func (h *errorGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	search := queryParams.Get("search")
+	status := queryParams.Get("status")
 
 	params := errorsGroup.GetAllParams{
 		FilterParams: errorsGroup.FilterParams{
@@ -118,6 +122,7 @@ func (h *errorGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 			TimeFrom:  timeFrom,
 			TimeTo:    timeTo,
 			Search:    search,
+			Status:    status,
 		},
 		SortOrder: sortOrder,
 		Limit:     limit,
@@ -131,4 +136,72 @@ func (h *errorGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httputils.RespondWithJSON(w, http.StatusOK, httputils.NewListResponse(totalCount, entities))
+}
+
+// UpdateStatus godoc
+// @Summary Update error group status
+// @Tags error-groups
+// @Accept json
+// @Produce json
+// @Param id path string true "Error Group ID"
+// @Param status body struct{Status string `json:"status"`} true "New status"
+// @Security BearerAuth
+// @Router /v1/error-groups/{id}/status [patch]
+func (h *errorGroupHandler) UpdateStatus(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	if id == "" {
+		httputils.RespondWithPlainError(w, http.StatusBadRequest, "id is required")
+		return
+	}
+
+	var body struct {
+		Status string `json:"status"`
+	}
+	if err := httputils.DecodeRequest(w, r, &body); err != nil {
+		return
+	}
+
+	if body.Status != string(errorsGroup.StatusResolved) && body.Status != string(errorsGroup.StatusUnresolved) && body.Status != string(errorsGroup.StatusIgnored) {
+		httputils.RespondWithPlainError(w, http.StatusBadRequest, "invalid status")
+		return
+	}
+
+	if err := h.service.UpdateStatus(r.Context(), id, errorsGroup.Status(body.Status)); err != nil {
+		httputils.RespondWithPlainError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// BatchUpdateStatus godoc
+// @Summary Batch update error groups status
+// @Tags error-groups
+// @Accept json
+// @Produce json
+// @Param body body struct{IDs []string `json:"ids"`; Status string `json:"status"`} true "IDs and status"
+// @Security BearerAuth
+// @Router /v1/error-groups/status:batch [post]
+func (h *errorGroupHandler) BatchUpdateStatus(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		IDs    []string `json:"ids"`
+		Status string   `json:"status"`
+	}
+	if err := httputils.DecodeRequest(w, r, &body); err != nil {
+		return
+	}
+	if len(body.IDs) == 0 {
+		httputils.RespondWithPlainError(w, http.StatusBadRequest, "ids is required")
+		return
+	}
+	if body.Status != string(errorsGroup.StatusResolved) && body.Status != string(errorsGroup.StatusUnresolved) && body.Status != string(errorsGroup.StatusIgnored) {
+		httputils.RespondWithPlainError(w, http.StatusBadRequest, "invalid status")
+		return
+	}
+	if err := h.service.BatchUpdateStatus(r.Context(), body.IDs, errorsGroup.Status(body.Status)); err != nil {
+		httputils.RespondWithPlainError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }

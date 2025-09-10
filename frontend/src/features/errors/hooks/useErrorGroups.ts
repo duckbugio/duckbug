@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {ErrGroup} from '@/entities/error/model/types';
+import {ErrGroup, ErrorGroupStatus} from '@/entities/error/model/types';
 import {fetchErrorGroups} from '@/entities/error/api/fetchErrorGroups';
 
 interface UseErrorGroupsProps {
@@ -7,6 +7,13 @@ interface UseErrorGroupsProps {
     initialPage?: number;
     initialPageSize?: number;
 }
+
+type ErrorGroupsFiltersState = {
+    search: string;
+    timeFrom: number | null;
+    timeTo: number | null;
+    status: ErrorGroupStatus | null;
+};
 
 export const useErrorGroups = ({
     projectId,
@@ -19,10 +26,11 @@ export const useErrorGroups = ({
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(initialPage);
     const [pageSize, setPageSize] = useState(initialPageSize);
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState<ErrorGroupsFiltersState>({
         search: '',
         timeFrom: null,
         timeTo: null,
+        status: null,
     });
 
     const handleLoad = useCallback(async () => {
@@ -55,6 +63,7 @@ export const useErrorGroups = ({
             search: '',
             timeFrom: null,
             timeTo: null,
+            status: null,
         });
     }, []);
 

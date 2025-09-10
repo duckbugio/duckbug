@@ -12,6 +12,7 @@ type FilterParams struct {
 	TimeFrom  int64
 	TimeTo    int64
 	Search    string
+	Status    string
 }
 
 type GetAllParams struct {
@@ -29,6 +30,7 @@ type Entity struct {
 	FirstSeenAt int64  `json:"firstSeenAt" example:"1704067200"`
 	LastSeenAt  int64  `json:"lastSeenAt" example:"1704067200"`
 	Counter     int    `json:"counter" example:"18"`
+	Status      Status `json:"status" example:"unresolved"`
 }
 
 type EntityList struct {

@@ -5,6 +5,8 @@ import {ErrGroup} from '@/entities/error/model/types';
 import {getErrorGroupsTableColumns} from '@/features/errors/ui/ErrorGroupsTable/lib/getErrorGroupsTableColumns';
 import TableSelection from '@/shared/ui/Table/TableSelection';
 import {useState} from 'react';
+import {Button, Card} from '@gravity-ui/uikit';
+import {apiClient} from '@/shared/api/apiClient';
 
 interface ErrorGroupsTableProps {
     projectId: string;
@@ -29,12 +31,32 @@ export const ErrorGroupsTable = ({
     if (error) return <DataFetchError errorMessage={error} onRetry={onRetry} />;
 
     return (
-        <TableSelection
-            data={errors}
-            columns={getErrorGroupsTableColumns(projectId, navigate)}
-            emptyMessage="Список ошибок пуст"
-            selectedIds={selectedIds}
-            onSelectionChange={setSelectedIds}
-        />
+        <>
+            <Card style={{padding: 12, marginBottom: 12}}>
+                <Button
+                    size="s"
+                    view="outlined"
+                    disabled={selectedIds.length === 0}
+                    onClick={async () => {
+                        await apiClient(`/error-groups/status:batch`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ids: selectedIds, status: 'resolved'}),
+                        });
+                        setSelectedIds([]);
+                        onRetry();
+                    }}
+                >
+                    Пометить выбранные как решённые
+                </Button>
+            </Card>
+            <TableSelection
+                data={errors}
+                columns={getErrorGroupsTableColumns(projectId, navigate)}
+                emptyMessage="Список ошибок пуст"
+                selectedIds={selectedIds}
+                onSelectionChange={setSelectedIds}
+            />
+        </>
     );
 };

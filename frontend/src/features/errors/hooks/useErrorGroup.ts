@@ -36,5 +36,6 @@ export const useErrorGroup = ({id}: UseErrorGroupProps) => {
         group,
         loading,
         error,
+        setGroup,
     };
 };

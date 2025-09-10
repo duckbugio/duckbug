@@ -18,6 +18,8 @@ export interface Err {
     time: number;
 }
 
+export type ErrorGroupStatus = 'unresolved' | 'resolved' | 'ignored';
+
 export interface ErrGroup {
     id: string;
     message: string;
@@ -26,4 +28,5 @@ export interface ErrGroup {
     firstSeenAt: number;
     lastSeenAt: number;
     counter: number;
+    status: ErrorGroupStatus;
 }

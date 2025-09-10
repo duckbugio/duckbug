@@ -1,4 +1,4 @@
-import {ErrGroup} from '@/entities/error/model/types';
+import {ErrGroup, ErrorGroupStatus} from '@/entities/error/model/types';
 import {apiClient} from '@/shared/api/apiClient';
 
 interface ErrorGroupsResponse {
@@ -14,6 +14,7 @@ interface FetchErrorGroupsParams {
         search: string;
         timeFrom: number | null;
         timeTo: number | null;
+        status?: ErrorGroupStatus | null;
     };
 }
 
@@ -31,6 +32,7 @@ export const fetchErrorGroups = async ({
         ...(filters.search && {search: filters.search}),
         ...(filters.timeFrom && {timeFrom: filters.timeFrom.toString()}),
         ...(filters.timeTo && {timeTo: filters.timeTo.toString()}),
+        ...(filters.status !== null && {status: filters.status}),
     });
 
     const response = await apiClient(`/error-groups?${params}`);

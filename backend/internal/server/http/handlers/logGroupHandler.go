@@ -81,7 +81,7 @@ func (h *logGroupHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} loggroup.EntityList "Successfully retrieved list of logs"
 // @Security BearerAuth
 // @Router /v1/log-groups [get].
-func (h *logGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *logGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) { //nolint:dupl
 	queryParams := r.URL.Query()
 
 	limit, err := strconv.Atoi(queryParams.Get("limit"))

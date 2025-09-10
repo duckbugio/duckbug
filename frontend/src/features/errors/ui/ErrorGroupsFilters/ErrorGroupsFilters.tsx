@@ -1,5 +1,6 @@
 import {FC} from 'react';
-import {Button, Card, Icon, TextInput} from '@gravity-ui/uikit';
+import {ErrorGroupStatus} from '@/entities/error/model/types';
+import {Button, Card, Icon, Select, TextInput} from '@gravity-ui/uikit';
 import {FunnelXmark} from '@gravity-ui/icons';
 import {DatePicker} from '@gravity-ui/date-components';
 import {dateTimeParse} from '@gravity-ui/date-utils';
@@ -8,6 +9,7 @@ export interface ErrorGroupsFiltersFields {
     search: string;
     timeFrom: number | null;
     timeTo: number | null;
+    status?: ErrorGroupStatus | null;
 }
 
 interface ErrorGroupsFiltersProps {
@@ -29,6 +31,24 @@ export const ErrorGroupsFilters: FC<ErrorGroupsFiltersProps> = ({
                         placeholder="Поиск..."
                         value={fields.search}
                         onChange={(e) => onFilterChange('search', e.target.value)}
+                    />
+                </div>
+
+                <div style={{minWidth: '220px'}}>
+                    <Select
+                        placeholder="Все статусы"
+                        options={[
+                            {value: 'unresolved', content: 'Открытые'},
+                            {value: 'resolved', content: 'Решенные'},
+                            {value: 'ignored', content: 'Игнор'},
+                        ]}
+                        value={fields.status ? [fields.status] : []}
+                        onUpdate={(vals) =>
+                            onFilterChange(
+                                'status',
+                                vals.length ? (vals[0] as ErrorGroupStatus) : null,
+                            )
+                        }
                     />
                 </div>
 

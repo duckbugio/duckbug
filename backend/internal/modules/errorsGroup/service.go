@@ -5,6 +5,8 @@ import "context"
 type Service interface {
 	GetByID(ctx context.Context, id string) (*Entity, error)
 	GetAll(ctx context.Context, params GetAllParams) ([]*Entity, int, error)
+	UpdateStatus(ctx context.Context, id string, status Status) error
+	BatchUpdateStatus(ctx context.Context, ids []string, status Status) error
 }
 
 type service struct {
@@ -45,6 +47,14 @@ func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, i
 	return responses, total, nil
 }
 
+func (s *service) UpdateStatus(ctx context.Context, id string, status Status) error {
+	return s.repo.UpdateStatus(ctx, id, status)
+}
+
+func (s *service) BatchUpdateStatus(ctx context.Context, ids []string, status Status) error {
+	return s.repo.BatchUpdateStatus(ctx, ids, status)
+}
+
 func toResponse(g *Group) *Entity {
 	return &Entity{
 		ID:          g.ID,
@@ -54,5 +64,6 @@ func toResponse(g *Group) *Entity {
 		FirstSeenAt: g.FirstSeenAt,
 		LastSeenAt:  g.LastSeenAt,
 		Counter:     g.Counter,
+		Status:      g.Status,
 	}
 }
