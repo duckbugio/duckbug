@@ -9,20 +9,18 @@ interface StatsProps {
 
 export const Stats: FC<StatsProps> = ({monthly, weekly, daily}) => {
     return (
-        <div
-            className={'g-container g-container_sr_3 g-s__px_5'}
-            style={{width: '100%', padding: 0, marginBlockStart: '20px', marginBottom: '20px'}}
-        >
-            <div className="g-row g-row_s_3">
-                <div className="g-col">
-                    <StatBlock title={'Последние 24 ч'} counter={daily} />
-                </div>
-                <div className="g-col">
-                    <StatBlock title={'Последние 7 дней'} counter={weekly} />
-                </div>
-                <div className="g-col">
-                    <StatBlock title={'Последние 30 дней'} counter={monthly} />
-                </div>
+        <div style={{width: '100%', marginBlockStart: '20px', marginBottom: '20px'}}>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                    gap: '16px',
+                    alignItems: 'stretch',
+                }}
+            >
+                <StatBlock title={'Последние 24 ч'} counter={daily} />
+                <StatBlock title={'Последние 7 дней'} counter={weekly} />
+                <StatBlock title={'Последние 30 дней'} counter={monthly} />
             </div>
         </div>
     );

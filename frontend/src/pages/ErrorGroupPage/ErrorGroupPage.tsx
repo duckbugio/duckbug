@@ -45,46 +45,34 @@ const ErrorGroupPage = () => {
 
     return (
         <PageContainer>
-            <div className="g-row g-row_s_5">
-                <div
-                    className="g-col g-col_size_8"
-                    style={{
-                        height: 'calc(100vh - 56px)',
-                        overflowY: 'auto',
-                    }}
-                >
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: '2fr 1fr',
+                    gap: '20px',
+                }}
+            >
+                <div style={{height: 'calc(100vh - 56px)', overflowY: 'auto'}}>
                     <ErrorGroupDetail id={groupId} />
 
                     <Divider style={{margin: '16px 0'}} />
 
                     <ErrorDetail id={errorId} />
                 </div>
-                <div
-                    className="g-col g-col_size_4"
-                    style={{
-                        height: 'calc(100vh - 56px)',
-                        overflowY: 'auto',
-                    }}
-                >
+                <div style={{height: 'calc(100vh - 56px)', overflowY: 'auto'}}>
                     {stats && (
                         <>
                             <div
-                                className="g-row g-row_sr_3"
                                 style={{
-                                    marginBottom: '16px',
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr 1fr',
                                     gap: '16px',
-                                    justifyContent: 'space-between',
+                                    marginBottom: '16px',
                                 }}
                             >
-                                <div className="g-col">
-                                    <StatBlock title={'24 ч'} counter={stats.last24h} />
-                                </div>
-                                <div className="g-col">
-                                    <StatBlock title={'7 дней'} counter={stats.last7d} />
-                                </div>
-                                <div className="g-col">
-                                    <StatBlock title={'30 дней'} counter={stats.last30d} />
-                                </div>
+                                <StatBlock title={'24 ч'} counter={stats.last24h} />
+                                <StatBlock title={'7 дней'} counter={stats.last7d} />
+                                <StatBlock title={'30 дней'} counter={stats.last30d} />
                             </div>
                         </>
                     )}

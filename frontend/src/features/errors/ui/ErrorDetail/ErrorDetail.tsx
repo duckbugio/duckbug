@@ -29,7 +29,7 @@ export const ErrorDetail = ({id}: ErrorDetailProps) => {
 
     return (
         <>
-            <div className="g-box g-flex" style={{justifyContent: 'space-between'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', gap: '12px'}}>
                 <Label theme={'info'}>{formatDateTimeMilliseconds(err.time)}</Label>
                 <Label theme={'clear'} type={'copy'} copyText={id}>
                     <b>ID</b>: {id}
