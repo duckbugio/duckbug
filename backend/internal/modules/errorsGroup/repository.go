@@ -123,10 +123,13 @@ func (r *repository) BatchUpdateStatus(ctx context.Context, ids []string, status
 	if len(ids) == 0 {
 		return nil
 	}
-	const query = `UPDATE error_groups SET status = $1 WHERE id = ANY($2)`
-	_, err := r.db.ExecContext(ctx, query, status, pq.StringArray(ids))
+	const query = `UPDATE error_groups SET status = $1 WHERE id = ANY($2::char(64)[])`
+	res, err := r.db.ExecContext(ctx, query, status, pq.StringArray(ids))
 	if err != nil {
 		return fmt.Errorf("failed to batch update status: %w", err)
+	}
+	if affected, err := res.RowsAffected(); err == nil && affected == 0 {
+		return ErrNotFound
 	}
 	return nil
 }
