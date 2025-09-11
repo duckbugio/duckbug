@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+### DuckBug: Чистый код и чистая архитектура
+
+- **Следуем существующим модулям**: перед реализацией нового функционала смотрим реализацию схожих модулей и делаем по аналогии.
+
+- **Фронтенд (FSD подход):**
+  - Слои/каталоги: `entities/`, `features/`, `pages/`, `shared/`.
+  - **entities** — типы и модели данных, API для сущностей.
+  - **features** — прикладные сценарии/хоки/компоненты, работающие с сущностями.
+  - **pages** — композиции features и entities в страницы.
+  - **shared** — общие утилиты, UI-компоненты, конфиги (например, `shared/api/apiClient.ts`, `shared/config/api.ts`).
+  - Соблюдать локализацию импорта через алиасы (`@/shared/...`).
+
+- **Бэкенд (модульность):**
+  - Модули в `backend/internal/modules/<module>`: `entity.go`, `models.go`, `repository.go`, `service.go`.
+  - HTTP-слой: хэндлеры в `backend/internal/server/http/handlers/*`, регистрация роутов — в `backend/internal/server/http/handler.go`.
+  - Версионирование API: префикс `/v1` внутри регистраций в хэндлерах; публичный ingest — `/ingest/...`.
+
+- **Правила чистого кода:**
+  - Понятные имена (без аббревиатур), осмысленные функции и переменные.
+  - Ранние возвраты, обработка ошибок и крайних случаев.
+  - Минимизировать глубину вложенности, избегать избыточных try/catch.
+  - Комментарии — только там, где сложно; объяснять «почему», а не «как».
+  - Поддерживать единый стиль форматирования; для фронтенда использовать конфиги eslint/prettier/stylelint из проекта.
+
+- **Проверки и согласованность:**
+  - Новые эндпоинты и слои должны повторять структуру существующих модулей (смотрите `errors`, `errorsGroup`, `log`, `logGroup`, `project`, `users`).
+  - На фронте новые блоки строить аналогично существующим в `features/errors`, `features/logs`, `features/projects`.
+
+Ссылки на примеры:
+- Бэкенд: [backend/internal/server/http/handlers/logHandler.go](mdc:backend/internal/server/http/handlers/logHandler.go), [backend/internal/server/http/handlers/authHandler.go](mdc:backend/internal/server/http/handlers/authHandler.go)
+- Фронтенд: [frontend/src/features/errors/ui/ErrorGroupsTable/ErrorGroupsTable.tsx](mdc:frontend/src/features/errors/ui/ErrorGroupsTable/ErrorGroupsTable.tsx), [frontend/src/shared/api/apiClient.ts](mdc:frontend/src/shared/api/apiClient.ts)

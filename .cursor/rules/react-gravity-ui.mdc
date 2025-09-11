@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+### DuckBug: Фронтенд на React и использование Gravity UI
+
+- **Фреймворк**: фронтенд построен на React + Vite + TypeScript.
+- **UI-библиотека**: используем компоненты из Gravity UI:
+  - Основные компоненты из `@gravity-ui/uikit` (Table, Button, Card, Text и т.д.).
+  - При необходимости — `@gravity-ui/date-components`, `@gravity-ui/icons`, `@gravity-ui/navigation`.
+- **Стили**: глобальные стили Gravity UI подключены в `frontend/src/main.tsx` (`@gravity-ui/uikit/styles/fonts.css`, `@gravity-ui/uikit/styles/styles.css`).
+- **Рекомендации по использованию**:
+  - Предпочитать готовые компоненты Gravity UI вместо кастомных, если функционал перекрывается.
+  - Поддерживать единый визуальный стиль и UX проекта.
+
+Ссылки на файлы/примеры:
+- [frontend/package.json](mdc:frontend/package.json)
+- [frontend/src/main.tsx](mdc:frontend/src/main.tsx)
+- Примеры использования: [frontend/src/shared/ui/Table/TableSelection.tsx](mdc:frontend/src/shared/ui/Table/TableSelection.tsx), [frontend/src/features/errors/ui/ErrorGroupsFilters/ErrorGroupsFilters.tsx](mdc:frontend/src/features/errors/ui/ErrorGroupsFilters/ErrorGroupsFilters.tsx)
