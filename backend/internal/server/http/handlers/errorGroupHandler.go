@@ -144,7 +144,7 @@ func (h *errorGroupHandler) GetAll(w http.ResponseWriter, r *http.Request) { //n
 // @Accept json
 // @Produce json
 // @Param id path string true "Error Group ID"
-// @Param status body struct{Status string `json:"status"`} true "New status"
+// @Param request body errorsgroup.UpdateStatusRequest true "New status"
 // @Security BearerAuth
 // @Router /v1/error-groups/{id}/status [patch]
 func (h *errorGroupHandler) UpdateStatus(w http.ResponseWriter, r *http.Request) {
@@ -155,9 +155,7 @@ func (h *errorGroupHandler) UpdateStatus(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	var body struct {
-		Status string `json:"status"`
-	}
+	var body errorsGroup.UpdateStatusRequest
 	if err := httputils.DecodeRequest(w, r, &body); err != nil {
 		return
 	}
@@ -180,14 +178,11 @@ func (h *errorGroupHandler) UpdateStatus(w http.ResponseWriter, r *http.Request)
 // @Tags error-groups
 // @Accept json
 // @Produce json
-// @Param body body struct{IDs []string `json:"ids"`; Status string `json:"status"`} true "IDs and status"
+// @Param request body errorsgroup.BatchUpdateStatusRequest true "IDs and status"
 // @Security BearerAuth
 // @Router /v1/error-groups/status:batch [post]
 func (h *errorGroupHandler) BatchUpdateStatus(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		IDs    []string `json:"ids"`
-		Status string   `json:"status"`
-	}
+	var body errorsGroup.BatchUpdateStatusRequest
 	if err := httputils.DecodeRequest(w, r, &body); err != nil {
 		return
 	}

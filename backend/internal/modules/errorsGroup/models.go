@@ -37,3 +37,14 @@ type EntityList struct {
 	Count int      `json:"count"`
 	Items []Entity `json:"items"`
 }
+
+// UpdateStatusRequest represents a request payload to update a single error group status
+type UpdateStatusRequest struct {
+	Status string `json:"status" example:"resolved" enums:"resolved,unresolved,ignored"`
+}
+
+// BatchUpdateStatusRequest represents a request payload to update multiple error groups statuses
+type BatchUpdateStatusRequest struct {
+	IDs    []string `json:"ids"`
+	Status string   `json:"status" example:"resolved" enums:"resolved,unresolved,ignored"`
+}

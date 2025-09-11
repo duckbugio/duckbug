@@ -16,13 +16,7 @@ type TableProps<I> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TableSelection: React.FC<TableProps<any>> = ({
-    data,
-    columns,
-    emptyMessage,
-    selectedIds,
-    onSelectionChange,
-}) => {
+const TableSelection: React.FC<TableProps<any>> = ({data, columns, emptyMessage}) => {
     return (
         <Card view="raised" style={{marginBottom: 16}}>
             <GravityTable
@@ -32,8 +26,6 @@ const TableSelection: React.FC<TableProps<any>> = ({
                 verticalAlign="middle"
                 wordWrap
                 width={'max'}
-                selectedIds={selectedIds}
-                onSelectionChange={onSelectionChange}
             />
         </Card>
     );
