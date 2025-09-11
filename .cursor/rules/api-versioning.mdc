@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+### DuckBug: Версионирование API и базовый URL
+
+- **Правило базового URL**: базовый URL с версией API задаётся централизованно, а не добавляется в эндпоинтах. Используем `API_BASE_URL` из `frontend/src/shared/config/api.ts`.
+- **Фронтенд**:
+  - Переменная `API_BASE_URL` определяется как `VITE_API_BASE_URL` или runtime-плейсхолдер или дефолт `https://duckbug.io/api/v1`.
+  - Клиент `apiClient` конкатенирует `API_BASE_URL + input` и выполняет refresh по `POST ${API_BASE_URL}/refresh`.
+  - Не добавляйте `/v1` в отдельных методах — версия уже находится в `API_BASE_URL`.
+
+Ссылки на файлы:
+- [frontend/src/shared/config/api.ts](mdc:frontend/src/shared/config/api.ts)
+- [frontend/src/shared/api/apiClient.ts](mdc:frontend/src/shared/api/apiClient.ts)

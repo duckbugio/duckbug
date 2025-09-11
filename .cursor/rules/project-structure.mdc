@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+### DuckBug: Структура проекта и точки входа
+
+- **Backend**: основной вход `backend/cmd/duckbug/main.go` (инициализация конфига, БД, сервисов, HTTP-сервера). HTTP-сервер создаётся в `backend/internal/server/http/server.go`, роутер в `backend/internal/server/http/handler.go`.
+- **Frontend**: конфиг API в `frontend/src/shared/config/api.ts`. HTTP-клиент в `frontend/src/shared/api/apiClient.ts`.
+- **Маршруты**: регистрация хэндлеров в `backend/internal/server/http/handlers/*.go`. Swagger доступен по префиксу `/docs`.
+- **Миграции**: `backend/internal/storage/sql/migrations`. Создание миграций через make-таргет.
+- **Сборка и операции**: все команды через Docker/Make (`Makefile`). См. цели `init`, `up`, `down`, `test`, `lint`, `build`.
+
+Полезные ссылки на файлы:
+- [backend/cmd/duckbug/main.go](mdc:backend/cmd/duckbug/main.go)
+- [backend/internal/server/http/server.go](mdc:backend/internal/server/http/server.go)
+- [backend/internal/server/http/handler.go](mdc:backend/internal/server/http/handler.go)
+- [frontend/src/shared/config/api.ts](mdc:frontend/src/shared/config/api.ts)
+- [frontend/src/shared/api/apiClient.ts](mdc:frontend/src/shared/api/apiClient.ts)
+- [Makefile](mdc:Makefile)

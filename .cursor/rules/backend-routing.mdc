@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+### DuckBug: Роутинг бэкенда и префиксы
+
+- **Версия API**: маршруты версии 1 регистрируются под префиксом `/v1` в хэндлерах. Примеры: `/v1/signup`, `/v1/login`, `/v1/logs`, `/v1/logs/{id}`, `/v1/logs/stats`.
+- **Ингест**: публичный инжест логов без версии: `/ingest/{projectID}:{key}/logs`.
+- **Документация**: Swagger доступен под `/docs`.
+- **Регистрация хэндлеров**: выполняется в `backend/internal/server/http/handler.go` через функции `Register*Handlers`.
+- **Middleware**: логирование запросов включено, CORS заготовлен в `middleware.go` (закомментирован в сервере).
+
+Файлы для ориентира:
+- [backend/internal/server/http/handler.go](mdc:backend/internal/server/http/handler.go)
+- [backend/internal/server/http/handlers/authHandler.go](mdc:backend/internal/server/http/handlers/authHandler.go)
+- [backend/internal/server/http/handlers/logHandler.go](mdc:backend/internal/server/http/handlers/logHandler.go)
+- [backend/internal/server/http/middleware.go](mdc:backend/internal/server/http/middleware.go)

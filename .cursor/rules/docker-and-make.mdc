@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+---
+### DuckBug: Использование Docker и Makefile
+
+- **Все команды выполняются через Docker Compose и Make**. Не запускайте локально `npm`, `go` и т.п. напрямую.
+- Основные цели:
+  - `make init` — полная инициализация окружения (down, pull, build, up, frontend-ready).
+  - `make up` / `make down` / `make restart` — управление сервисами.
+  - `make test` — все тесты; `make test-frontend`, `make test-backend` — выборочно.
+  - `make lint` — все линтеры; есть отдельные цели и `lint-fix`.
+  - `make build` — сборка фронтенда.
+  - `make db-up` / `make db-down` / `make db-reset` — БД.
+  - `make logs-*` — просмотр логов отдельных сервисов.
+  - `make backend-migrate-new name=<name>` — создать миграцию.
+  - `make backend-swagger` — сгенерировать Swagger.
+
+Ссылки:
+- [Makefile](mdc:Makefile)
