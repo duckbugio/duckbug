@@ -97,19 +97,26 @@ func (r *repository) Count(ctx context.Context, params FilterParams) (int, error
 }
 
 func (r *repository) GetStats(ctx context.Context, projectID string, fingerprint string) (*Stats, error) {
+	// Precompute thresholds in ms to help planner use range conditions on indexed column "time"
+	nowMs := time.Now().UnixMilli()
+	last24hFrom := nowMs - int64(24*time.Hour/time.Millisecond)
+	last7dFrom := nowMs - int64(7*24*time.Hour/time.Millisecond)
+	last30dFrom := nowMs - int64(30*24*time.Hour/time.Millisecond)
+
 	query := `
         SELECT
-            COUNT(*) FILTER (WHERE time >= (EXTRACT(EPOCH FROM NOW() - INTERVAL '24 HOURS') * 1000)) AS last_24h,
-            COUNT(*) FILTER (WHERE time >= (EXTRACT(EPOCH FROM NOW() - INTERVAL '7 DAYS') * 1000)) AS last_7d,
-			COUNT(*) FILTER (WHERE time >= (EXTRACT(EPOCH FROM NOW() - INTERVAL '30 DAYS') * 1000)) AS last_30d
-        FROM
-            errors
-        WHERE
-            project_id = :projectId
+            SUM(CASE WHEN time >= :last24hFrom THEN 1 ELSE 0 END) AS last_24h,
+            SUM(CASE WHEN time >= :last7dFrom THEN 1 ELSE 0 END)   AS last_7d,
+            SUM(CASE WHEN time >= :last30dFrom THEN 1 ELSE 0 END)  AS last_30d
+        FROM errors
+        WHERE project_id = :projectId
     `
 
 	args := map[string]interface{}{
-		"projectId": projectID,
+		"projectId":   projectID,
+		"last24hFrom": last24hFrom,
+		"last7dFrom":  last7dFrom,
+		"last30dFrom": last30dFrom,
 	}
 
 	if fingerprint != "" {
