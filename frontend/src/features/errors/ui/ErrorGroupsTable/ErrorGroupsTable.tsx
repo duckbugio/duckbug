@@ -56,6 +56,7 @@ export const ErrorGroupsTable = ({
                 emptyMessage="Список ошибок пуст"
                 selectedIds={selectedIds}
                 onSelectionChange={setSelectedIds}
+                getRowId={(g: ErrGroup) => g.id}
             />
         </>
     );

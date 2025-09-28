@@ -12,11 +12,19 @@ type TableProps<I> = {
     emptyMessage: string;
     selectedIds?: string[];
     onSelectionChange?: (ids: string[]) => void;
+    getRowId?: (item: I) => string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TableSelection: React.FC<TableProps<any>> = ({data, columns, emptyMessage}) => {
+const TableSelection: React.FC<TableProps<any>> = ({
+    data,
+    columns,
+    emptyMessage,
+    selectedIds,
+    onSelectionChange,
+    getRowId,
+}) => {
     return (
         <Card view="raised" style={{marginBottom: 16}}>
             <GravityTable
@@ -26,6 +34,9 @@ const TableSelection: React.FC<TableProps<any>> = ({data, columns, emptyMessage}
                 verticalAlign="middle"
                 wordWrap
                 width={'max'}
+                selectedIds={selectedIds}
+                onSelectionChange={onSelectionChange}
+                getRowId={getRowId}
             />
         </Card>
     );
