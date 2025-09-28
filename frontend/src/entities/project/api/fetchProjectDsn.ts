@@ -1,4 +1,5 @@
-import {apiClient} from '@/shared/api/apiClient';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {DSNSchema} from '@/shared/lib/schemas/common';
 
 interface ProjectsDsnResponse {
     dsn: string;
@@ -8,12 +9,5 @@ interface FetchProjectParams {
     id: string;
 }
 
-export const fetchProjectDsn = async ({id}: FetchProjectParams): Promise<ProjectsDsnResponse> => {
-    const response = await apiClient(`/projects/${id}/dsn`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-};
+export const fetchProjectDsn = async ({id}: FetchProjectParams): Promise<ProjectsDsnResponse> =>
+    requestWithSchema<ProjectsDsnResponse>(`/projects/${id}/dsn`, DSNSchema);

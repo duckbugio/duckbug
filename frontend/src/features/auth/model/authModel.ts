@@ -7,6 +7,12 @@ import {
     SignupCredentials,
     SignupResponse,
 } from '@/features/auth/types';
+import {
+    setAccessTokenProvider,
+    setLogoutHandler,
+    setRefreshTokenProvider,
+    setTokensRefreshedHandler,
+} from '@/shared/api/apiClient';
 
 export const loginFx = createEffect<LoginCredentials, LoginResponse, Error>(async (credentials) => {
     const response = await loginUser(credentials);
@@ -98,4 +104,19 @@ sample({
     clock: initAuth,
     fn: () => true,
     target: $isAuthInitialized,
+});
+
+// Зарегистрировать обработчик logout для apiClient
+setLogoutHandler(() => {
+    $logout();
+});
+
+// Зарегистрировать провайдеры токенов и обработчик обновления токенов
+setAccessTokenProvider(() => localStorage.getItem('accessToken'));
+setRefreshTokenProvider(() => localStorage.getItem('refreshToken'));
+setTokensRefreshedHandler(({accessToken, refreshToken}) => {
+    localStorage.setItem('accessToken', accessToken);
+    if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+    }
 });

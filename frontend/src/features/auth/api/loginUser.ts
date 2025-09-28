@@ -1,18 +1,18 @@
-import {API_BASE_URL} from '@/shared/config/api';
 import {LoginCredentials, LoginResponse} from '@/features/auth/types';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {z} from 'zod';
 
 export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const Schema = z.object({
+        accessToken: z.string(),
+        refreshToken: z.string(),
+        expiresIn: z.number(),
+    });
+    return requestWithSchema<LoginResponse>(`/login`, Schema, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
     });
-
-    if (!response.ok) {
-        throw new Error(`Login failed: ${response.status}`);
-    }
-
-    return response.json();
 };

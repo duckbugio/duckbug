@@ -1,5 +1,8 @@
 import {ErrGroup, ErrorGroupStatus} from '@/entities/error/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {ErrGroupSchema} from '@/entities/error/model/schemas';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
+import {createPageSchema} from '@/shared/lib/schemas/common';
 
 interface ErrorGroupsResponse {
     count: number;
@@ -24,22 +27,17 @@ export const fetchErrorGroups = async ({
     pageSize,
     filters,
 }: FetchErrorGroupsParams): Promise<ErrorGroupsResponse> => {
-    const params = new URLSearchParams({
+    const params = buildSearchParams({
         sort: 'desc',
-        limit: pageSize.toString(),
-        offset: ((page - 1) * pageSize).toString(),
-        ...(projectId && {projectId}),
-        ...(filters.search && {search: filters.search}),
-        ...(filters.timeFrom && {timeFrom: filters.timeFrom.toString()}),
-        ...(filters.timeTo && {timeTo: filters.timeTo.toString()}),
-        ...(filters.status !== null && {status: filters.status}),
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
+        projectId,
+        search: filters.search,
+        timeFrom: filters.timeFrom,
+        timeTo: filters.timeTo,
+        status: filters.status ?? undefined,
     });
 
-    const response = await apiClient(`/error-groups?${params}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    const PageSchema = createPageSchema(ErrGroupSchema);
+    return requestWithSchema<ErrorGroupsResponse>(`/error-groups?${params}`, PageSchema);
 };

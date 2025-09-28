@@ -1,5 +1,8 @@
 import {LogGroup} from '@/entities/log/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {LogGroupSchema} from '@/entities/log/model/schemas';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
+import {createPageSchema} from '@/shared/lib/schemas/common';
 
 interface LogGroupsResponse {
     count: number;
@@ -24,22 +27,17 @@ export const fetchLogGroups = async ({
     pageSize,
     filters,
 }: FetchLogGroupsParams): Promise<LogGroupsResponse> => {
-    const params = new URLSearchParams({
+    const params = buildSearchParams({
         sort: 'desc',
-        limit: pageSize.toString(),
-        offset: ((page - 1) * pageSize).toString(),
-        ...(projectId && {projectId}),
-        ...(filters.level && {level: filters.level}),
-        ...(filters.search && {search: filters.search}),
-        ...(filters.timeFrom && {timeFrom: filters.timeFrom.toString()}),
-        ...(filters.timeTo && {timeTo: filters.timeTo.toString()}),
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
+        projectId,
+        level: filters.level,
+        search: filters.search,
+        timeFrom: filters.timeFrom,
+        timeTo: filters.timeTo,
     });
 
-    const response = await apiClient(`/log-groups?${params}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    const PageSchema = createPageSchema(LogGroupSchema);
+    return requestWithSchema<LogGroupsResponse>(`/log-groups?${params}`, PageSchema);
 };

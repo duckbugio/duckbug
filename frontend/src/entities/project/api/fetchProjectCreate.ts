@@ -1,12 +1,12 @@
 import {Project} from '@/entities/project/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {requestJson} from '@/shared/api/requestJson';
 
 interface FetchProjectCreate {
     name: string;
 }
 
 export const fetchProjectCreate = async ({name}: FetchProjectCreate): Promise<Project> => {
-    const response = await apiClient(`/projects`, {
+    return requestJson<Project>(`/projects`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -15,10 +15,4 @@ export const fetchProjectCreate = async ({name}: FetchProjectCreate): Promise<Pr
             name,
         }),
     });
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
 };

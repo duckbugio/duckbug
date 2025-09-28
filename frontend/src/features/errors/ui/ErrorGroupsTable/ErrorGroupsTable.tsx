@@ -6,7 +6,7 @@ import {getErrorGroupsTableColumns} from '@/features/errors/ui/ErrorGroupsTable/
 import TableSelection from '@/shared/ui/Table/TableSelection';
 import {useState} from 'react';
 import {Button, Card} from '@gravity-ui/uikit';
-import {apiClient} from '@/shared/api/apiClient';
+import {updateErrorGroupsStatus} from '@/features/errors/api/updateErrorGroupsStatus';
 
 interface ErrorGroupsTableProps {
     projectId: string;
@@ -38,11 +38,7 @@ export const ErrorGroupsTable = ({
                     view="outlined"
                     disabled={selectedIds.length === 0}
                     onClick={async () => {
-                        await apiClient(`/error-groups/status:batch`, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ids: selectedIds, status: 'resolved'}),
-                        });
+                        await updateErrorGroupsStatus({ids: selectedIds, status: 'resolved'});
                         setSelectedIds([]);
                         onRetry();
                     }}

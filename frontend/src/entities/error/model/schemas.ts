@@ -1,0 +1,32 @@
+import {z} from 'zod';
+
+export const ErrSchema = z.object({
+    id: z.string(),
+    message: z.string(),
+    file: z.string(),
+    line: z.number().int(),
+    stacktrace: z.array(z.unknown()).optional(),
+    context: z.union([z.record(z.unknown()), z.array(z.unknown())]).optional(),
+    ip: z.string().optional(),
+    url: z.string().optional(),
+    method: z.string().optional(),
+    headers: z.record(z.unknown()).optional(),
+    queryParams: z.record(z.unknown()).optional(),
+    bodyParams: z.record(z.unknown()).optional(),
+    cookies: z.record(z.unknown()).optional(),
+    session: z.record(z.unknown()).optional(),
+    files: z.record(z.unknown()).optional(),
+    env: z.record(z.unknown()).optional(),
+    time: z.number(),
+});
+
+export const ErrGroupSchema = z.object({
+    id: z.string(),
+    message: z.string(),
+    file: z.string(),
+    line: z.number().int(),
+    firstSeenAt: z.number(),
+    lastSeenAt: z.number(),
+    counter: z.number(),
+    status: z.enum(['unresolved', 'resolved', 'ignored']),
+});

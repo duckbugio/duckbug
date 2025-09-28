@@ -1,5 +1,8 @@
 import {Project} from '@/entities/project/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {ProjectSchema} from '@/entities/project/model/schemas';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
+import {createPageSchema} from '@/shared/lib/schemas/common';
 
 interface ProjectsResponse {
     count: number;
@@ -15,17 +18,12 @@ export const fetchProjects = async ({
     page,
     pageSize,
 }: FetchProjectsParams): Promise<ProjectsResponse> => {
-    const params = new URLSearchParams({
+    const params = buildSearchParams({
         sort: 'desc',
-        limit: pageSize.toString(),
-        offset: ((page - 1) * pageSize).toString(),
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
     });
 
-    const response = await apiClient(`/projects?${params}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    const PageSchema = createPageSchema(ProjectSchema);
+    return requestWithSchema<ProjectsResponse>(`/projects?${params}`, PageSchema);
 };

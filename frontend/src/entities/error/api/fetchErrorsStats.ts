@@ -1,4 +1,6 @@
-import {apiClient} from '@/shared/api/apiClient';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
+import {StatsSchema} from '@/shared/lib/schemas/common';
 
 export interface ErrorsStatsResponse {
     last24h: number;
@@ -15,16 +17,10 @@ export const fetchErrorsStats = async ({
     projectId,
     groupId,
 }: FetchErrorsStatsParams): Promise<ErrorsStatsResponse> => {
-    const params = new URLSearchParams({
-        ...(projectId && {projectId}),
-        ...(groupId && {groupId: groupId}),
+    const params = buildSearchParams({
+        projectId,
+        groupId,
     });
 
-    const response = await apiClient(`/errors/stats?${params}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    return requestWithSchema<ErrorsStatsResponse>(`/errors/stats?${params}`, StatsSchema);
 };

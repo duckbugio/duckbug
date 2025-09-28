@@ -1,8 +1,70 @@
 import {API_BASE_URL} from '@/shared/config/api';
-import {$logout} from '@/features/auth/model/authModel';
+
+let logoutHandler: (() => void) | null = null;
+
+export const setLogoutHandler = (handler: (() => void) | null) => {
+    logoutHandler = handler;
+};
+
+let accessTokenProvider: (() => string | null) | null = null;
+let refreshTokenProvider: (() => string | null) | null = null;
+let tokensRefreshedHandler:
+    | ((tokens: {accessToken: string; refreshToken?: string | null}) => void)
+    | null = null;
+
+export const setAccessTokenProvider = (provider: (() => string | null) | null) => {
+    accessTokenProvider = provider;
+};
+
+export const setRefreshTokenProvider = (provider: (() => string | null) | null) => {
+    refreshTokenProvider = provider;
+};
+
+export const setTokensRefreshedHandler = (
+    handler: ((tokens: {accessToken: string; refreshToken?: string | null}) => void) | null,
+) => {
+    tokensRefreshedHandler = handler;
+};
+
+const tryRefreshTokens = async (
+    currentRefreshToken: string,
+): Promise<{accessToken: string; refreshToken: string | null} | null> => {
+    try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({refreshToken: currentRefreshToken}),
+        });
+
+        if (!refreshResponse.ok) {
+            return null;
+        }
+
+        const {accessToken: newAccessToken, refreshToken: newRefreshToken} =
+            await refreshResponse.json();
+        if (tokensRefreshedHandler) {
+            tokensRefreshedHandler({
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken,
+            });
+        } else {
+            localStorage.setItem('accessToken', newAccessToken);
+            if (newRefreshToken) {
+                localStorage.setItem('refreshToken', newRefreshToken);
+            }
+        }
+        return {accessToken: newAccessToken, refreshToken: newRefreshToken ?? null};
+    } catch {
+        return null;
+    }
+};
 
 export const apiClient = async (input: RequestInfo, init?: RequestInit) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = accessTokenProvider
+        ? accessTokenProvider()
+        : localStorage.getItem('accessToken');
 
     const headers = new Headers(init?.headers);
     if (accessToken) {
@@ -15,37 +77,25 @@ export const apiClient = async (input: RequestInfo, init?: RequestInit) => {
     });
 
     if (response.status === 401) {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-            try {
-                const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({refreshToken}),
-                });
-
-                if (refreshResponse.ok) {
-                    const {accessToken: newAccessToken, refreshToken: newRefreshToken} =
-                        await refreshResponse.json();
-
-                    localStorage.setItem('accessToken', newAccessToken);
-                    if (newRefreshToken) {
-                        localStorage.setItem('refreshToken', newRefreshToken);
-                    }
-
-                    headers.set('Authorization', `Bearer ${newAccessToken}`);
-                    return fetch(input, {
-                        ...init,
-                        headers,
-                    });
-                }
-            } catch {
-                // console.error('Refresh token failed', e);
-            }
+        const refreshToken = refreshTokenProvider
+            ? refreshTokenProvider()
+            : localStorage.getItem('refreshToken');
+        if (!refreshToken) {
+            if (logoutHandler) logoutHandler();
+            return response;
         }
-        $logout();
+
+        const refreshed = await tryRefreshTokens(refreshToken);
+        if (!refreshed) {
+            if (logoutHandler) logoutHandler();
+            return response;
+        }
+
+        headers.set('Authorization', `Bearer ${refreshed.accessToken}`);
+        return fetch(API_BASE_URL + input, {
+            ...init,
+            headers,
+        });
     }
 
     return response;

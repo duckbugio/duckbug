@@ -1,5 +1,8 @@
 import {Log} from '@/entities/log/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {LogSchema} from '@/entities/log/model/schemas';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
+import {createPageSchema} from '@/shared/lib/schemas/common';
 
 interface LogsResponse {
     count: number;
@@ -26,23 +29,18 @@ export const fetchLogs = async ({
     pageSize,
     filters,
 }: FetchLogsParams): Promise<LogsResponse> => {
-    const params = new URLSearchParams({
+    const params = buildSearchParams({
         sort: 'desc',
-        limit: pageSize.toString(),
-        offset: ((page - 1) * pageSize).toString(),
-        ...(projectId && {projectId}),
-        ...(groupId && {groupId}),
-        ...(filters.level && {level: filters.level}),
-        ...(filters.search && {search: filters.search}),
-        ...(filters.timeFrom && {timeFrom: filters.timeFrom.toString()}),
-        ...(filters.timeTo && {timeTo: filters.timeTo.toString()}),
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
+        projectId,
+        groupId,
+        level: filters.level,
+        search: filters.search,
+        timeFrom: filters.timeFrom,
+        timeTo: filters.timeTo,
     });
 
-    const response = await apiClient(`/logs?${params}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    const PageSchema = createPageSchema(LogSchema);
+    return requestWithSchema<LogsResponse>(`/logs?${params}`, PageSchema);
 };

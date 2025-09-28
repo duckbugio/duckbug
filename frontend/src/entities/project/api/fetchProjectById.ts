@@ -1,16 +1,10 @@
 import {Project} from '@/entities/project/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {ProjectSchema} from '@/entities/project/model/schemas';
 
 interface FetchProjectParams {
     id: string;
 }
 
-export const fetchProjectById = async ({id}: FetchProjectParams): Promise<Project> => {
-    const response = await apiClient(`/projects/${id}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-};
+export const fetchProjectById = async ({id}: FetchProjectParams): Promise<Project> =>
+    requestWithSchema(`/projects/${id}`, ProjectSchema);

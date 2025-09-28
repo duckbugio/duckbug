@@ -1,16 +1,10 @@
 import {ErrGroup} from '@/entities/error/model/types';
-import {apiClient} from '@/shared/api/apiClient';
+import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {ErrGroupSchema} from '@/entities/error/model/schemas';
 
 interface FetchErrorGroupParams {
     id: string;
 }
 
-export const fetchErrorGroupById = async ({id}: FetchErrorGroupParams): Promise<ErrGroup> => {
-    const response = await apiClient(`/error-groups/${id}`);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-};
+export const fetchErrorGroupById = async ({id}: FetchErrorGroupParams): Promise<ErrGroup> =>
+    requestWithSchema(`/error-groups/${id}`, ErrGroupSchema);
