@@ -1,9 +1,9 @@
 import {Project} from '@/entities/project/model/types';
-import {Button, Text as GravityText, Icon, Link, TableColumnConfig} from '@gravity-ui/uikit';
-import {Folder, TrashBin} from '@gravity-ui/icons';
+import {Button, Text as GravityText, Icon, Label, Link, TableColumnConfig} from '@gravity-ui/uikit';
+import {CircleCheck, Folder, TrashBin} from '@gravity-ui/icons';
 import {NavigateFunction} from 'react-router-dom';
 import {getProjectPath} from '@/app/url-generators';
-import {ProjectTodayStatsCell} from './ProjectTodayStatsCell';
+import {formatNumber} from '@/shared/lib/format/formatNumber';
 
 export const getProjectsTableColumns = (
     navigate: NavigateFunction,
@@ -26,16 +26,45 @@ export const getProjectsTableColumns = (
         },
     },
     {
-        id: 'today',
-        name: 'Сегодня',
+        id: 'errorsCounter',
+        name: 'Ошибки',
         template: (project: Project) => {
+            if (project.openErrors === 0) {
+                return (
+                    <Label size={'m'} theme={'success'}>
+                        <Icon data={CircleCheck} size={16} />
+                    </Label>
+                );
+            }
+            
             return (
-                <ProjectTodayStatsCell
-                    openErrors={project.openErrors}
-                    logsLast24h={project.logsLast24h}
-                />
+                <Label size={'m'} theme={'warning'}>
+                    {formatNumber(project.openErrors ?? 0)}
+                </Label>
             );
         },
+        align: 'end',
+    },
+    {
+        id: 'logsCounter',
+        name: 'Логи',
+        template: (project: Project) => {
+            if (project.logsLast24h === 0) {
+                return (
+                    <Label size={'m'} theme={'success'}>
+                        <Icon data={CircleCheck} size={16} />
+                    </Label>
+                );
+            }
+
+            return (
+                <Label size={'m'} theme={'warning'}>
+                    {formatNumber(project.logsLast24h ?? 0)}
+                </Label>
+            );
+        },
+        width: 80,
+        align: 'end',
     },
     {
         id: 'actions',
@@ -54,5 +83,7 @@ export const getProjectsTableColumns = (
                 </div>
             );
         },
+        width: 80,
+        align: 'end',
     },
 ];
