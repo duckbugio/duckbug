@@ -4,7 +4,10 @@ export const LogSchema = z.object({
     id: z.string(),
     level: z.enum(['DEBUG', 'INFO', 'WARN', 'ERROR']),
     message: z.string(),
-    context: z.union([z.record(z.unknown()), z.array(z.unknown())]).optional(),
+    context: z
+        .union([z.record(z.unknown()), z.array(z.unknown()), z.string()])
+        .nullable()
+        .optional(),
     time: z.number(),
 });
 
