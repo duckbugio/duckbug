@@ -12,7 +12,7 @@ type TableProps<I> = {
     emptyMessage: string;
     selectedIds?: string[];
     onSelectionChange?: (ids: string[]) => void;
-    getRowId?: (item: I) => string;
+    getRowDescriptor?: (item: I, index: number) => {id?: string} | undefined;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,9 +21,7 @@ const TableSelection: React.FC<TableProps<any>> = ({
     data,
     columns,
     emptyMessage,
-    selectedIds,
-    onSelectionChange,
-    getRowId,
+    getRowDescriptor,
 }) => {
     return (
         <Card view="raised" style={{marginBottom: 16}}>
@@ -34,9 +32,7 @@ const TableSelection: React.FC<TableProps<any>> = ({
                 verticalAlign="middle"
                 wordWrap
                 width={'max'}
-                selectedIds={selectedIds}
-                onSelectionChange={onSelectionChange}
-                getRowId={getRowId}
+                getRowDescriptor={getRowDescriptor}
             />
         </Card>
     );
