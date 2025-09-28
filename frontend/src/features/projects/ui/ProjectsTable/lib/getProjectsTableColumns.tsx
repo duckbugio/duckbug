@@ -36,7 +36,7 @@ export const getProjectsTableColumns = (
                     </Label>
                 );
             }
-            
+
             return (
                 <Label size={'m'} theme={'warning'}>
                     {formatNumber(project.openErrors ?? 0)}

@@ -5,16 +5,16 @@ export interface Err {
     line: number;
     stacktrace?: Array<unknown>;
     context?: Record<string, unknown> | Array<unknown>;
-    ip?: string;
-    url?: string;
-    method?: string;
-    headers?: Record<string, unknown>;
-    queryParams?: Record<string, unknown>;
-    bodyParams?: Record<string, unknown>;
-    cookies?: Record<string, unknown>;
-    session?: Record<string, unknown>;
-    files?: Record<string, unknown>;
-    env?: Record<string, unknown>;
+    ip?: string | null;
+    url?: string | null;
+    method?: string | null;
+    headers?: Record<string, unknown> | null;
+    queryParams?: Record<string, unknown> | null;
+    bodyParams?: Record<string, unknown> | null;
+    cookies?: Record<string, unknown> | null;
+    session?: Record<string, unknown> | null;
+    files?: Record<string, unknown> | null;
+    env?: Record<string, unknown> | null;
     time: number;
 }
 
