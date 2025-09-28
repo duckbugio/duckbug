@@ -1,4 +1,4 @@
-import {NavigateFunction} from 'react-router';
+import {NavigateFunction} from 'react-router-dom';
 import {Text as GravityText, Icon, Label, Link, TableColumnConfig} from '@gravity-ui/uikit';
 import {getErrorGroupPath} from '@/app/url-generators';
 import {ErrGroup} from '@/entities/error/model/types';

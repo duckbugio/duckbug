@@ -1,6 +1,6 @@
 import {DataFetchError} from '@/shared/ui/DataFetchError';
 import {DataLoader} from '@/shared/ui/DataLoader';
-import {NavigateFunction} from 'react-router';
+import {NavigateFunction} from 'react-router-dom';
 import {ErrGroup} from '@/entities/error/model/types';
 import {getErrorGroupsTableColumns} from '@/features/errors/ui/ErrorGroupsTable/lib/getErrorGroupsTableColumns';
 import TableSelection from '@/shared/ui/Table/TableSelection';

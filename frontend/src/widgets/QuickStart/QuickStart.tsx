@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card} from '@gravity-ui/uikit';
 import {CopyInput} from '@/shared/ui/CopyInput';
-import QuickStartPHP from '@/shared/ui/QuickStart/languages/QuickStartPHP';
+import QuickStartPHP from './languages/QuickStartPHP';
 
 type QuickStartProps = {
     language: string;

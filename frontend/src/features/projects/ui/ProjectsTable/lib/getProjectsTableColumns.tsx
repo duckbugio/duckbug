@@ -1,7 +1,7 @@
 import {Project} from '@/entities/project/model/types';
 import {Button, Text as GravityText, Icon, Link, TableColumnConfig} from '@gravity-ui/uikit';
 import {Folder, TrashBin} from '@gravity-ui/icons';
-import {NavigateFunction} from 'react-router';
+import {NavigateFunction} from 'react-router-dom';
 import {getProjectPath} from '@/app/url-generators';
 
 export const getProjectsTableColumns = (

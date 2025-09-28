@@ -6,7 +6,7 @@ import {Text as GravityText} from '@gravity-ui/uikit';
 import {useProject} from '@/features/projects/hooks/useProject';
 import {DataLoader} from '@/shared/ui/DataLoader';
 import {DataFetchError} from '@/shared/ui/DataFetchError';
-import QuickStart from '@/shared/ui/QuickStart/QuickStart';
+import QuickStart from '@/widgets/QuickStart/QuickStart';
 import {useState} from 'react';
 import ProjectTabs, {TabsState} from '@/features/projects/ui/ProjectTabs/ProjectTabs';
 import {ErrorGroupsFilters} from '@/features/errors/ui/ErrorGroupsFilters';

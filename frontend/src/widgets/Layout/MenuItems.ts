@@ -1,5 +1,5 @@
-import {MenuItem} from '@gravity-ui/navigation/build/esm/components/types';
 import {Briefcase} from '@gravity-ui/icons';
+import {MenuItem} from '@gravity-ui/navigation';
 
 export const getMenuItems = (navigate: (path: string) => void): MenuItem[] => [
     // {

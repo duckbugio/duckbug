@@ -1,8 +1,8 @@
 import {useState} from 'react';
 import {ThemeProvider} from '@gravity-ui/uikit';
 import {LOCAL_STORAGE_KEYS, THEMES} from './constants';
-import {RouterProvider, createBrowserRouter} from 'react-router';
-import {Layout} from '@/shared/Layout/Layout';
+import {RouterProvider, createBrowserRouter} from 'react-router-dom';
+import {Layout} from '@/widgets/Layout/Layout';
 import {routes} from '@/app/routes';
 import {AuthInit} from '@/features/auth/ui/AuthInit';
 

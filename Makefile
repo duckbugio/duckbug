@@ -58,6 +58,7 @@ frontend-lint:
 	docker compose run --rm -T frontend-cli npm run lint:js
 	docker compose run --rm -T frontend-cli npm run lint:styles
 	docker compose run --rm -T frontend-cli npm run lint:prettier
+	docker compose run --rm -T frontend-cli npm run type-check
 
 frontend-lint-fix:
 	@echo "🔧 Fixing frontend linting issues..."

@@ -13,7 +13,6 @@ export type AppProps = {
     children: React.ReactNode;
     setTheme: (theme: Theme) => void;
 };
-
 export const Wrapper: React.FC<AppProps> = ({children, setTheme}) => {
     const theme = useThemeValue();
     const isDark = theme === THEMES.DARK;

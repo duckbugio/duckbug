@@ -2,11 +2,10 @@ import {FC, useState} from 'react';
 import {Icon, Menu, Theme} from '@gravity-ui/uikit';
 import {ArrowRightFromSquare} from '@gravity-ui/icons';
 import {AsideHeader} from '@gravity-ui/navigation';
-import {Wrapper} from '../Wrapper';
-import {Outlet, useLocation} from 'react-router';
-import {getMenuItems} from './MenuItems';
-import {Navigate, useNavigate} from 'react-router-dom';
-import {getLogo} from './Logo';
+import {Wrapper} from '@/widgets/Wrapper';
+import {Navigate, Outlet, useLocation, useNavigate} from 'react-router-dom';
+import {getMenuItems} from '@/widgets/Layout/MenuItems';
+import {getLogo} from '@/widgets/Layout/Logo';
 import {useUnit} from 'effector-react';
 import {$accessToken, $isAuthInitialized, $logout} from '@/features/auth/model/authModel';
 

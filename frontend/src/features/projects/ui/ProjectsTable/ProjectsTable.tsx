@@ -2,7 +2,7 @@ import {DataFetchError} from '@/shared/ui/DataFetchError';
 import {DataLoader} from '@/shared/ui/DataLoader';
 import {Project} from '@/entities/project/model/types';
 import {getProjectsTableColumns} from '@/features/projects/ui/ProjectsTable/lib/getProjectsTableColumns';
-import {NavigateFunction} from 'react-router';
+import {NavigateFunction} from 'react-router-dom';
 import Table from '@/shared/ui/Table/Table';
 
 interface ProjectsListProps {
