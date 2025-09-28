@@ -30,7 +30,7 @@ export const useErrorGroups = ({
         search: '',
         timeFrom: null,
         timeTo: null,
-        status: null,
+        status: 'unresolved',
     });
 
     const handleLoad = useCallback(async () => {
@@ -63,7 +63,7 @@ export const useErrorGroups = ({
             search: '',
             timeFrom: null,
             timeTo: null,
-            status: null,
+            status: 'unresolved',
         });
     }, []);
 

@@ -191,7 +191,13 @@ func (r *repository) Create(ctx context.Context, e *Error) error {
         INSERT INTO error_groups (id, project_id, file, line, message, first_seen_at, last_seen_at, counter)
         VALUES (:id, :project_id, :file, :line, :message, :first_seen_at, :last_seen_at, 1)
         ON CONFLICT (id) DO UPDATE 
-        SET counter = error_groups.counter + 1, last_seen_at = EXCLUDED.last_seen_at
+        SET 
+            counter = error_groups.counter + 1,
+            last_seen_at = EXCLUDED.last_seen_at,
+            status = CASE 
+                WHEN error_groups.status = 'resolved' THEN 'unresolved' 
+                ELSE error_groups.status 
+            END
     `
 
 	now := time.Now().Unix()
