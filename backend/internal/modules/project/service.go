@@ -3,6 +3,9 @@ package project
 import (
 	"context"
 
+	moduleErrors "github.com/duckbugio/duckbug/internal/modules/errors"
+	moduleErrorsGroup "github.com/duckbugio/duckbug/internal/modules/errorsGroup"
+	moduleLog "github.com/duckbugio/duckbug/internal/modules/log"
 	"github.com/google/uuid"
 )
 
@@ -16,9 +19,12 @@ type Service interface {
 }
 
 type service struct {
-	repo   Repository
-	logger Logger
-	domain string
+	repo            Repository
+	logger          Logger
+	domain          string
+	errorsRepo      moduleErrors.Repository
+	errorGroupsRepo moduleErrorsGroup.Repository
+	logsRepo        moduleLog.Repository
 }
 
 func NewService(repo Repository, logger Logger, domain string) Service {
@@ -27,6 +33,13 @@ func NewService(repo Repository, logger Logger, domain string) Service {
 		logger: logger,
 		domain: domain,
 	}
+}
+
+// SetStatsRepos allows wiring optional repositories used to enrich projects with stats
+func (s *service) SetStatsRepos(er moduleErrors.Repository, egr moduleErrorsGroup.Repository, lr moduleLog.Repository) {
+	s.errorsRepo = er
+	s.errorGroupsRepo = egr
+	s.logsRepo = lr
 }
 
 func (s *service) GetByID(ctx context.Context, id string) (*Entity, error) {
@@ -61,7 +74,21 @@ func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, i
 
 	responses := make([]*Entity, 0, len(projects))
 	for _, project := range projects {
-		responses = append(responses, toResponse(project))
+		// Default values if stats repos not wired
+		entity := toResponse(project)
+		if s.errorGroupsRepo != nil {
+			// unresolved error groups count
+			count, _ := s.errorGroupsRepo.Count(ctx, moduleErrorsGroup.FilterParams{ProjectID: project.ID, Status: string(moduleErrorsGroup.StatusUnresolved)})
+			entity.OpenErrors = count
+		}
+		if s.logsRepo != nil {
+			// logs last 24h using stats repository method
+			stats, _ := s.logsRepo.GetStats(ctx, project.ID, "")
+			if stats != nil {
+				entity.LogsLast24h = stats.Last24h
+			}
+		}
+		responses = append(responses, entity)
 	}
 	return responses, total, nil
 }

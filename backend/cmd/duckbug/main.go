@@ -86,6 +86,13 @@ func main() {
 	errorService := moduleError.NewService(moduleError.NewRepository(db, appLogger), appLogger)
 	errorGroupService := moduleGroupError.NewService(moduleGroupError.NewRepository(db, appLogger), appLogger)
 	projectService := moduleProject.NewService(moduleProject.NewRepository(db, appLogger), appLogger, config.Domain)
+	// Wire repos for aggregated stats in projects listing
+	// We rely on concrete service type to set optional repositories
+	if ps, ok := projectService.(interface {
+		SetStatsRepos(er moduleError.Repository, egr moduleGroupError.Repository, lr moduleLog.Repository)
+	}); ok {
+		ps.SetStatsRepos(moduleError.NewRepository(db, appLogger), moduleGroupError.NewRepository(db, appLogger), moduleLog.NewRepository(db, appLogger))
+	}
 
 	s := server.New(
 		appLogger,

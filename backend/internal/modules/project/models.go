@@ -24,6 +24,9 @@ type Update struct {
 type Entity struct {
 	ID   string `json:"id" example:"a08929b5-d4f0-4ceb-9cfe-bb4fc05b030c"`
 	Name string `json:"name" example:"New project"`
+	// Aggregated stats
+	OpenErrors  int `json:"openErrors" example:"5"`
+	LogsLast24h int `json:"logsLast24h" example:"42"`
 }
 
 type EntityList struct {

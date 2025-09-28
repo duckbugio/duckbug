@@ -3,6 +3,7 @@ import {Button, Text as GravityText, Icon, Link, TableColumnConfig} from '@gravi
 import {Folder, TrashBin} from '@gravity-ui/icons';
 import {NavigateFunction} from 'react-router-dom';
 import {getProjectPath} from '@/app/url-generators';
+import {ProjectTodayStatsCell} from './ProjectTodayStatsCell';
 
 export const getProjectsTableColumns = (
     navigate: NavigateFunction,
@@ -21,6 +22,18 @@ export const getProjectsTableColumns = (
                         <GravityText variant="subheader-2">{project.name}</GravityText>
                     </div>
                 </Link>
+            );
+        },
+    },
+    {
+        id: 'today',
+        name: 'Сегодня',
+        template: (project: Project) => {
+            return (
+                <ProjectTodayStatsCell
+                    openErrors={project.openErrors}
+                    logsLast24h={project.logsLast24h}
+                />
             );
         },
     },
