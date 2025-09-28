@@ -1,6 +1,7 @@
 import {ErrGroup, ErrorGroupStatus} from '@/entities/error/model/types';
 import {ErrGroupSchema} from '@/entities/error/model/schemas';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
 import {createPageSchema} from '@/shared/lib/schemas/common';
 
@@ -39,5 +40,8 @@ export const fetchErrorGroups = async ({
     });
 
     const PageSchema = createPageSchema(ErrGroupSchema);
-    return requestWithSchema<ErrorGroupsResponse>(`/error-groups?${params}`, PageSchema);
+    return requestWithSchema<ErrorGroupsResponse>(
+        `${ENDPOINTS.errors.groups}?${params}`,
+        PageSchema,
+    );
 };

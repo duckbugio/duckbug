@@ -1,6 +1,7 @@
 import {Err} from '@/entities/error/model/types';
 import {ErrSchema} from '@/entities/error/model/schemas';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
 import {createPageSchema} from '@/shared/lib/schemas/common';
 
@@ -40,5 +41,5 @@ export const fetchErrors = async ({
     });
 
     const PageSchema = createPageSchema(ErrSchema);
-    return requestWithSchema<ErrorsResponse>(`/errors?${params}`, PageSchema);
+    return requestWithSchema<ErrorsResponse>(`${ENDPOINTS.errors.root}?${params}`, PageSchema);
 };

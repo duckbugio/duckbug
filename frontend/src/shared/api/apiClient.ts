@@ -61,7 +61,10 @@ const tryRefreshTokens = async (
     }
 };
 
-export const apiClient = async (input: RequestInfo, init?: RequestInit) => {
+export const apiClient = async (input: string, init?: RequestInit) => {
+    if (input.startsWith('http://') || input.startsWith('https://')) {
+        throw new Error('Absolute URLs are not allowed in apiClient. Use relative paths only.');
+    }
     const accessToken = accessTokenProvider
         ? accessTokenProvider()
         : localStorage.getItem('accessToken');
@@ -87,6 +90,10 @@ export const apiClient = async (input: RequestInfo, init?: RequestInit) => {
 
         const refreshed = await tryRefreshTokens(refreshToken);
         if (!refreshed) {
+            try {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+            } catch {}
             if (logoutHandler) logoutHandler();
             return response;
         }

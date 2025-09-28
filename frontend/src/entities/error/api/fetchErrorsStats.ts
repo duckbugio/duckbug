@@ -1,6 +1,7 @@
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
 import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
 import {StatsSchema} from '@/shared/lib/schemas/common';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 
 export interface ErrorsStatsResponse {
     last24h: number;
@@ -22,5 +23,8 @@ export const fetchErrorsStats = async ({
         groupId,
     });
 
-    return requestWithSchema<ErrorsStatsResponse>(`/errors/stats?${params}`, StatsSchema);
+    return requestWithSchema<ErrorsStatsResponse>(
+        `${ENDPOINTS.errors.stats}?${params}`,
+        StatsSchema,
+    );
 };

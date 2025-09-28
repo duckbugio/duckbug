@@ -1,4 +1,5 @@
 import {requestVoid} from '@/shared/api/requestVoid';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 
 interface UpdateErrorGroupsStatusParams {
     ids: string[];
@@ -8,7 +9,7 @@ interface UpdateErrorGroupsStatusParams {
 export const updateErrorGroupsStatus = async (
     params: UpdateErrorGroupsStatusParams,
 ): Promise<void> => {
-    await requestVoid(`/error-groups/status:batch`, {
+    await requestVoid(ENDPOINTS.errors.groupsStatusBatch, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(params),

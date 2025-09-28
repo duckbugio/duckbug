@@ -6,7 +6,7 @@ import {getErrorGroupsTableColumns} from '@/features/errors/ui/ErrorGroupsTable/
 import TableSelection from '@/shared/ui/Table/TableSelection';
 import {useState} from 'react';
 import {Button, Card} from '@gravity-ui/uikit';
-import {updateErrorGroupsStatus} from '@/features/errors/api/updateErrorGroupsStatus';
+import {updateErrorGroupsStatus} from '@/entities/error/api/updateErrorGroupsStatus';
 
 interface ErrorGroupsTableProps {
     projectId: string;

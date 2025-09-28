@@ -1,6 +1,7 @@
 import {LoginCredentials, LoginResponse} from '@/features/auth/types';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
 import {z} from 'zod';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 
 export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
     const Schema = z.object({
@@ -8,7 +9,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
         refreshToken: z.string(),
         expiresIn: z.number(),
     });
-    return requestWithSchema<LoginResponse>(`/login`, Schema, {
+    return requestWithSchema<LoginResponse>(ENDPOINTS.auth.login, Schema, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

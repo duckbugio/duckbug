@@ -1,13 +1,23 @@
-import ProjectsPage from '@/pages/ProjectsPage/ProjectsPage';
-import LogsPage from '@/pages/LogsPage/LogsPage';
+import {lazy} from 'react';
 import {RouteObject} from 'react-router-dom';
-import {DashboardPage} from '@/pages/DashboardPage/DashboardPage';
-import {NotFoundPage} from '@/pages/NotFoundPage';
-import ErrorGroupPage from '@/pages/ErrorGroupPage/ErrorGroupPage';
-import ProjectPage from '@/pages/ProjectPage/ProjectPage';
-import LogGroupPage from '@/pages/LogGroupPage/LogGroupPage';
-import {LoginPage} from '@/pages/LoginPage/LoginPage';
-import {SignupPage} from '@/pages/SignupPage/SignupPage';
+
+const ProjectsPage = lazy(() => import('@/pages/ProjectsPage/ProjectsPage'));
+const LogsPage = lazy(() => import('@/pages/LogsPage/LogsPage'));
+const DashboardPage = lazy(() =>
+    import('@/pages/DashboardPage/DashboardPage').then((m) => ({default: m.DashboardPage})),
+);
+const NotFoundPage = lazy(() =>
+    import('@/pages/NotFoundPage').then((m) => ({default: m.NotFoundPage})),
+);
+const ErrorGroupPage = lazy(() => import('@/pages/ErrorGroupPage/ErrorGroupPage'));
+const ProjectPage = lazy(() => import('@/pages/ProjectPage/ProjectPage'));
+const LogGroupPage = lazy(() => import('@/pages/LogGroupPage/LogGroupPage'));
+const LoginPage = lazy(() =>
+    import('@/pages/LoginPage/LoginPage').then((m) => ({default: m.LoginPage})),
+);
+const SignupPage = lazy(() =>
+    import('@/pages/SignupPage/SignupPage').then((m) => ({default: m.SignupPage})),
+);
 
 export const routes: RouteObject[] = [
     {

@@ -1,6 +1,7 @@
 import {Log} from '@/entities/log/model/types';
 import {LogSchema} from '@/entities/log/model/schemas';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
 import {createPageSchema} from '@/shared/lib/schemas/common';
 
@@ -42,5 +43,5 @@ export const fetchLogs = async ({
     });
 
     const PageSchema = createPageSchema(LogSchema);
-    return requestWithSchema<LogsResponse>(`/logs?${params}`, PageSchema);
+    return requestWithSchema<LogsResponse>(`${ENDPOINTS.logs.root}?${params}`, PageSchema);
 };
