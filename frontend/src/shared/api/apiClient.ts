@@ -1,4 +1,5 @@
 import {API_BASE_URL} from '@/shared/config/api';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 
 let logoutHandler: (() => void) | null = null;
 
@@ -30,7 +31,7 @@ const tryRefreshTokens = async (
     currentRefreshToken: string,
 ): Promise<{accessToken: string; refreshToken: string | null} | null> => {
     try {
-        const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+        const refreshResponse = await fetch(API_BASE_URL + ENDPOINTS.auth.refresh, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

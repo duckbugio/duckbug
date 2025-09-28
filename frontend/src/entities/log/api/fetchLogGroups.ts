@@ -3,6 +3,7 @@ import {LogGroupSchema} from '@/entities/log/model/schemas';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
 import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
 import {createPageSchema} from '@/shared/lib/schemas/common';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 
 interface LogGroupsResponse {
     count: number;
@@ -39,5 +40,5 @@ export const fetchLogGroups = async ({
     });
 
     const PageSchema = createPageSchema(LogGroupSchema);
-    return requestWithSchema<LogGroupsResponse>(`/log-groups?${params}`, PageSchema);
+    return requestWithSchema<LogGroupsResponse>(`${ENDPOINTS.logs.groups}?${params}`, PageSchema);
 };

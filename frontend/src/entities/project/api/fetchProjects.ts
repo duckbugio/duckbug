@@ -3,6 +3,7 @@ import {ProjectSchema} from '@/entities/project/model/schemas';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
 import {buildSearchParams} from '@/shared/lib/http/buildSearchParams';
 import {createPageSchema} from '@/shared/lib/schemas/common';
+import {ENDPOINTS} from '@/shared/api/endpoints';
 
 interface ProjectsResponse {
     count: number;
@@ -25,5 +26,5 @@ export const fetchProjects = async ({
     });
 
     const PageSchema = createPageSchema(ProjectSchema);
-    return requestWithSchema<ProjectsResponse>(`/projects?${params}`, PageSchema);
+    return requestWithSchema<ProjectsResponse>(`${ENDPOINTS.projects.root}?${params}`, PageSchema);
 };
