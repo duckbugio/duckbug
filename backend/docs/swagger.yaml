@@ -1,0 +1,1408 @@
+definitions:
+  errors.Create:
+    properties:
+      bodyParams:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"a": 5, "b": 0}`
+          )
+        type: object
+      context:
+        description: |-
+          Context can be any JSON value
+          @Schema(
+            oneOf={
+              string,
+              object,
+              array,
+              number,
+              boolean,
+              null
+            },
+            example={"key":"value"}
+          )
+      cookies:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"sessionId": "abc123", "theme": "dark"}`
+          )
+        type: object
+      env:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"APP_ENV": "production", "DB_HOST": "db.example.com"}`
+          )
+        type: object
+      file:
+        example: /var/www/app/index.php
+        type: string
+      files:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"avatar": "avatar.jpg", "size": 1024}`
+          )
+        type: object
+      headers:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"Content-Type": "application/json", "Authorization": "Bearer token"}`
+          )
+        type: object
+      ip:
+        example: 192.168.1.1
+        type: string
+      line:
+        example: 15
+        type: integer
+      message:
+        example: Division by zero in calculate()
+        type: string
+      method:
+        example: POST
+        type: string
+      queryParams:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"page": 1, "limit": 10}`
+          )
+        type: object
+      session:
+        additionalProperties: true
+        description: |-
+          @Schema(
+            type = "object",
+            example = `{"userId": 123, "role": "admin"}`
+          )
+        type: object
+      stacktrace: {}
+      time:
+        example: 1704067200000
+        format: int64
+        type: integer
+      url:
+        example: https://example.com/api/v1/calculate
+        type: string
+    required:
+    - file
+    - line
+    - message
+    - stacktrace
+    - time
+    type: object
+  errors.Entity:
+    properties:
+      bodyParams:
+        additionalProperties: true
+        type: object
+      context:
+        description: |-
+          Context can be any JSON value
+          @Schema(
+            oneOf={
+              string,
+              object,
+              array,
+              number,
+              boolean,
+              null
+            },
+            example={"key":"value"}
+          )
+      cookies:
+        additionalProperties: true
+        type: object
+      env:
+        additionalProperties: true
+        type: object
+      file:
+        example: /var/www/index.php
+        type: string
+      files:
+        additionalProperties: true
+        type: object
+      headers:
+        additionalProperties: true
+        type: object
+      id:
+        example: a08929b5-d4f0-4ceb-9cfe-bb4fc05b030c
+        type: string
+      ip:
+        example: 192.168.1.1
+        type: string
+      line:
+        example: 15
+        type: integer
+      message:
+        example: 'Error: Division by zero'
+        type: string
+      method:
+        example: POST
+        type: string
+      queryParams:
+        additionalProperties: true
+        type: object
+      session:
+        additionalProperties: true
+        type: object
+      stacktrace: {}
+      time:
+        description: Unix timestamp in milliseconds
+        example: 1704067200000
+        type: integer
+      url:
+        example: https://example.com/api/v1/calculate
+        type: string
+    required:
+    - file
+    - line
+    - message
+    - stacktrace
+    type: object
+  errors.EntityList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/errors.Entity'
+        type: array
+    type: object
+  errors.Stats:
+    properties:
+      last7d:
+        type: integer
+      last24h:
+        type: integer
+      last30d:
+        type: integer
+    type: object
+  errors.Update:
+    properties:
+      context:
+        description: |-
+          Context can be any JSON value
+          @Schema(
+            oneOf={
+              string,
+              object,
+              array,
+              number,
+              boolean,
+              null
+            },
+            example={"key":"value"}
+          )
+      file:
+        example: index.php
+        type: string
+      line:
+        example: 1
+        type: integer
+      message:
+        example: Error message
+        type: string
+      stacktrace: {}
+    required:
+    - file
+    - line
+    - message
+    - stacktrace
+    type: object
+  errorsgroup.BatchUpdateStatusRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+      status:
+        enum:
+        - resolved
+        - unresolved
+        - ignored
+        example: resolved
+        type: string
+    type: object
+  errorsgroup.Entity:
+    properties:
+      counter:
+        example: 18
+        type: integer
+      file:
+        example: index.php
+        type: string
+      firstSeenAt:
+        example: 1704067200
+        type: integer
+      id:
+        example: a08929b5-d4f0-4ceb-9cfe-bb4fc05b030c
+        type: string
+      lastSeenAt:
+        example: 1704067200
+        type: integer
+      line:
+        example: 1
+        type: integer
+      message:
+        example: Error message
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/errorsgroup.Status'
+        example: unresolved
+    required:
+    - file
+    - line
+    - message
+    type: object
+  errorsgroup.EntityList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/errorsgroup.Entity'
+        type: array
+    type: object
+  errorsgroup.Status:
+    enum:
+    - unresolved
+    - resolved
+    - ignored
+    type: string
+    x-enum-varnames:
+    - StatusUnresolved
+    - StatusResolved
+    - StatusIgnored
+  errorsgroup.UpdateStatusRequest:
+    properties:
+      status:
+        enum:
+        - resolved
+        - unresolved
+        - ignored
+        example: resolved
+        type: string
+    type: object
+  log.Create:
+    properties:
+      context:
+        description: |-
+          Context can be any JSON value
+          @Schema(
+            oneOf={
+              string,
+              object,
+              array,
+              number,
+              boolean,
+              null
+            },
+            example={"key":"value"}
+          )
+      level:
+        enum:
+        - DEBUG
+        - INFO
+        - WARN
+        - ERROR
+        - FATAL
+        type: string
+      message:
+        example: first log message
+        type: string
+      time:
+        example: 1704067200000
+        format: int64
+        type: integer
+    required:
+    - level
+    - message
+    - time
+    type: object
+  log.Entity:
+    properties:
+      context:
+        description: |-
+          Context can be any JSON value
+          @Schema(
+            oneOf={
+              string,
+              object,
+              array,
+              number,
+              boolean,
+              null
+            },
+            example={"key":"value"}
+          )
+      id:
+        example: a08929b5-d4f0-4ceb-9cfe-bb4fc05b030c
+        type: string
+      level:
+        example: INFO
+        type: string
+      message:
+        example: first log message
+        type: string
+      time:
+        example: 1704067200000
+        type: integer
+    type: object
+  log.EntityList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/log.Entity'
+        type: array
+    type: object
+  log.Stats:
+    properties:
+      last7d:
+        type: integer
+      last24h:
+        type: integer
+      last30d:
+        type: integer
+    type: object
+  log.Update:
+    properties:
+      context:
+        description: |-
+          Context can be any JSON value
+          @Schema(
+            oneOf={
+              string,
+              object,
+              array,
+              number,
+              boolean,
+              null
+            },
+            example={"key":"value"}
+          )
+      level:
+        enum:
+        - DEBUG
+        - INFO
+        - WARN
+        - ERROR
+        - FATAL
+        type: string
+      message:
+        example: updated log message
+        type: string
+    type: object
+  loggroup.Entity:
+    properties:
+      counter:
+        example: 18
+        type: integer
+      firstSeenAt:
+        example: 1704067200
+        type: integer
+      id:
+        example: a08929b5-d4f0-4ceb-9cfe-bb4fc05b030c
+        type: string
+      lastSeenAt:
+        example: 1704067200
+        type: integer
+      level:
+        example: INFO
+        type: string
+      message:
+        example: Log message
+        type: string
+    required:
+    - message
+    type: object
+  loggroup.EntityList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/loggroup.Entity'
+        type: array
+    type: object
+  project.Create:
+    properties:
+      name:
+        example: New project
+        type: string
+    required:
+    - name
+    type: object
+  project.Entity:
+    properties:
+      id:
+        example: a08929b5-d4f0-4ceb-9cfe-bb4fc05b030c
+        type: string
+      logsLast24h:
+        example: 42
+        type: integer
+      name:
+        example: New project
+        type: string
+      openErrors:
+        description: Aggregated stats
+        example: 5
+        type: integer
+    type: object
+  project.EntityList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/project.Entity'
+        type: array
+    type: object
+  project.Update:
+    properties:
+      name:
+        example: New project
+        type: string
+    required:
+    - name
+    type: object
+  users.Login:
+    properties:
+      email:
+        example: me@example.com
+        type: string
+      password:
+        example: "1234567890"
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  users.Signup:
+    properties:
+      email:
+        example: me@example.com
+        type: string
+      password:
+        example: "1234567890"
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact:
+    email: support@duckbug.io
+    name: API Support
+  description: This is DuckBug.io API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://duckbug.io/terms/
+  title: DuckBug API
+  version: 1.0.0
+paths:
+  /ingest/{projectID}:{key}/errors:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new error entry in the system
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectID
+        required: true
+        type: string
+      - description: Public key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Error entry creation data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/errors.Create'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created error entry
+          schema:
+            $ref: '#/definitions/errors.Entity'
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new error entry
+      tags:
+      - ingest
+  /ingest/{projectID}:{key}/logs:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new log entry in the system
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectID
+        required: true
+        type: string
+      - description: Public key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Log entry creation data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/log.Create'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created log entry
+          schema:
+            $ref: '#/definitions/log.Entity'
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new log entry
+      tags:
+      - ingest
+  /v1/error-groups:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all errors from the system
+      parameters:
+      - description: Project ID
+        in: query
+        name: projectId
+        type: string
+      - description: Time errors from
+        in: query
+        name: timeFrom
+        type: integer
+      - description: Time errors to
+        in: query
+        name: timeTo
+        type: integer
+      - description: Search in message field
+        in: query
+        name: search
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        type: string
+      - default: 50
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of errors
+          schema:
+            $ref: '#/definitions/errorsgroup.EntityList'
+      security:
+      - BearerAuth: []
+      summary: Get all error groups
+      tags:
+      - error-groups
+  /v1/error-groups/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an error group by ID
+      parameters:
+      - description: Error ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errorsgroup.Entity'
+      security:
+      - BearerAuth: []
+      summary: Get an error group by ID
+      tags:
+      - error-groups
+  /v1/error-groups/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Error Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New status
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/errorsgroup.UpdateStatusRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Update error group status
+      tags:
+      - error-groups
+  /v1/error-groups/status:batch:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: IDs and status
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/errorsgroup.BatchUpdateStatusRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Batch update error groups status
+      tags:
+      - error-groups
+  /v1/errors:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all errors from the system
+      parameters:
+      - description: Project ID
+        in: query
+        name: projectId
+        type: string
+      - description: Group ID
+        in: query
+        name: groupId
+        type: string
+      - description: Time errors from
+        in: query
+        name: timeFrom
+        type: integer
+      - description: Time errors to
+        in: query
+        name: timeTo
+        type: integer
+      - description: Search in message field
+        in: query
+        name: search
+        type: string
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        type: string
+      - default: 50
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of errors
+          schema:
+            $ref: '#/definitions/errors.EntityList'
+      security:
+      - BearerAuth: []
+      summary: Get all errors
+      tags:
+      - errors
+  /v1/errors/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an error entry by its ID
+      parameters:
+      - description: Error entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request - when ID is not provided
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error - when something goes wrong
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete an error entry
+      tags:
+      - errors
+    get:
+      consumes:
+      - application/json
+      description: Get an error by ID
+      parameters:
+      - description: Error ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errors.Entity'
+      security:
+      - BearerAuth: []
+      summary: Get an error by ID
+      tags:
+      - errors
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing error entry
+      parameters:
+      - description: Error entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Error update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/errors.Update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated error entry
+          schema:
+            $ref: '#/definitions/errors.Entity'
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "404":
+          description: Error entry not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update an error entry
+      tags:
+      - errors
+  /v1/errors/stats:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a stats of all errors from the system
+      parameters:
+      - description: Project ID
+        in: query
+        name: projectId
+        required: true
+        type: string
+      - description: Group ID
+        in: query
+        name: groupId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved stats of errors
+          schema:
+            $ref: '#/definitions/errors.Stats'
+      security:
+      - BearerAuth: []
+      summary: Get errors stats
+      tags:
+      - errors
+  /v1/log-groups:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all logs from the system
+      parameters:
+      - description: Project ID
+        in: query
+        name: projectId
+        type: string
+      - description: Time logs from
+        in: query
+        name: timeFrom
+        type: integer
+      - description: Time logs to
+        in: query
+        name: timeTo
+        type: integer
+      - description: Filter by log level
+        enum:
+        - DEBUG
+        - INFO
+        - WARN
+        - ERROR
+        in: query
+        name: level
+        type: string
+      - description: Search in message field
+        in: query
+        name: search
+        type: string
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        type: string
+      - default: 50
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of logs
+          schema:
+            $ref: '#/definitions/loggroup.EntityList'
+      security:
+      - BearerAuth: []
+      summary: Get all log groups
+      tags:
+      - log-groups
+  /v1/log-groups/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a log group by ID
+      parameters:
+      - description: Log ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/loggroup.Entity'
+      security:
+      - BearerAuth: []
+      summary: Get a log group by ID
+      tags:
+      - log-groups
+  /v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Login
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.Login'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully login
+          schema:
+            type: integer
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - auth
+  /v1/logs:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all logs from the system
+      parameters:
+      - description: Project ID
+        in: query
+        name: projectId
+        type: string
+      - description: Group ID
+        in: query
+        name: groupId
+        type: string
+      - description: Time logs from
+        in: query
+        name: timeFrom
+        type: integer
+      - description: Time logs to
+        in: query
+        name: timeTo
+        type: integer
+      - description: Filter by log level
+        enum:
+        - DEBUG
+        - INFO
+        - WARN
+        - ERROR
+        in: query
+        name: level
+        type: string
+      - description: Search in message field
+        in: query
+        name: search
+        type: string
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        type: string
+      - default: 50
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of logs
+          schema:
+            $ref: '#/definitions/log.EntityList'
+      security:
+      - BearerAuth: []
+      summary: Get all logs
+      tags:
+      - logs
+  /v1/logs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a log entry by its ID
+      parameters:
+      - description: Log entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request - when ID is not provided
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error - when something goes wrong
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a log entry
+      tags:
+      - logs
+    get:
+      consumes:
+      - application/json
+      description: Get a log by ID
+      parameters:
+      - description: Log ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/log.Entity'
+      security:
+      - BearerAuth: []
+      summary: Get a log by ID
+      tags:
+      - logs
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing log entry
+      parameters:
+      - description: Log entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Log update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/log.Update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated log entry
+          schema:
+            $ref: '#/definitions/log.Entity'
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "404":
+          description: Log entry not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a log entry
+      tags:
+      - logs
+  /v1/logs/stats:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a stats of all logs from the system
+      parameters:
+      - description: Project ID
+        in: query
+        name: projectId
+        required: true
+        type: string
+      - description: Group ID
+        in: query
+        name: groupId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved stats of logs
+          schema:
+            $ref: '#/definitions/log.Stats'
+      security:
+      - BearerAuth: []
+      summary: Get logs stats
+      tags:
+      - logs
+  /v1/projects:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all projects from the system
+      parameters:
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        type: string
+      - default: 50
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of projects
+          schema:
+            $ref: '#/definitions/project.EntityList'
+      security:
+      - BearerAuth: []
+      summary: Get all projects
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      description: Creates a new project entry in the system
+      parameters:
+      - description: Project entry creation data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/project.Create'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created project entry
+          schema:
+            $ref: '#/definitions/project.Entity'
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a new project entry
+      tags:
+      - projects
+  /v1/projects/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a project entry by its ID
+      parameters:
+      - description: Project entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request - when ID is not provided
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error - when something goes wrong
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a project entry
+      tags:
+      - projects
+    get:
+      consumes:
+      - application/json
+      description: Get a project by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Entity'
+      security:
+      - BearerAuth: []
+      summary: Get a project by ID
+      tags:
+      - projects
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing project entry
+      parameters:
+      - description: Project entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Project update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/project.Update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated project entry
+          schema:
+            $ref: '#/definitions/project.Entity'
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "404":
+          description: Project entry not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a project entry
+      tags:
+      - projects
+  /v1/projects/{id}/dsn:
+    get:
+      consumes:
+      - application/json
+      description: Get a project DSN
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get a project DSN
+      tags:
+      - projects
+  /v1/signup:
+    post:
+      consumes:
+      - application/json
+      description: Signup
+      parameters:
+      - description: Signup
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.Signup'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully signup
+          schema:
+            type: integer
+        "400":
+          description: Invalid input data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Signup
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
