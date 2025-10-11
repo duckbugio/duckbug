@@ -1,5 +1,5 @@
 root = "."
-tmp_dir = "var/tmp"
+tmp_dir = "tmp"
 
 [build]
 cmd = "swag init -g ./cmd/duckbug/main.go && go build -o /opt/app/bin cmd/duckbug/*"
