@@ -63,6 +63,7 @@ services:
       - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://duckbug.localhost/api/v1}
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     command: >
       bash -c 'until [ -f .ready ]; do sleep 1 ; done &&
       npm install &&
@@ -78,6 +79,7 @@ services:
       context: ./frontend/docker/development/node
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     networks:
       - frontend-network
 
