@@ -22,6 +22,7 @@ import (
 	moduleLog "github.com/duckbugio/duckbug/internal/modules/log"
 	moduleGroupLog "github.com/duckbugio/duckbug/internal/modules/logGroup"
 	moduleProject "github.com/duckbugio/duckbug/internal/modules/project"
+	moduleTechnology "github.com/duckbugio/duckbug/internal/modules/technology"
 	moduleUser "github.com/duckbugio/duckbug/internal/modules/users"
 	server "github.com/duckbugio/duckbug/internal/server/http"
 )
@@ -85,6 +86,7 @@ func main() {
 	logGroupService := moduleGroupLog.NewService(moduleGroupLog.NewRepository(db, appLogger), appLogger)
 	errorService := moduleError.NewService(moduleError.NewRepository(db, appLogger), appLogger)
 	errorGroupService := moduleGroupError.NewService(moduleGroupError.NewRepository(db, appLogger), appLogger)
+	technologyService := moduleTechnology.NewService(moduleTechnology.NewRepository(db, appLogger), appLogger)
 	projectService := moduleProject.NewService(moduleProject.NewRepository(db, appLogger), appLogger, config.Domain)
 	// Wire repos for aggregated stats in projects listing
 	// We rely on concrete service type to set optional repositories
@@ -102,6 +104,7 @@ func main() {
 		logGroupService,
 		errorService,
 		errorGroupService,
+		technologyService,
 		projectService,
 		"",
 		config.Port,

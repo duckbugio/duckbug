@@ -9,10 +9,12 @@ import {CreateProjectModal} from './components/CreateProjectModal';
 import {DeleteProjectModal} from './components/DeleteProjectModal';
 import {useCreateProject} from '@/features/projects/hooks/useCreateProject';
 import {useDeleteProject} from '@/features/projects/hooks/useDeleteProject';
+import {useTechnologies} from '@/features/projects/hooks/useTechnologies';
 
 const ProjectsPage = () => {
     const navigate = useNavigate();
     const {projects, loading, error, handleLoadProjects} = useProjects({});
+    const {technologies} = useTechnologies();
     const [open, setOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState<{id: string; name: string} | null>(null);
@@ -56,7 +58,8 @@ const ProjectsPage = () => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const name = formData.get('productName') as string;
-        createProject({name});
+        const technologyId = Number(formData.get('technologyId'));
+        createProject({name, technologyId});
     };
 
     useHotkeys('a', toggleModal);
@@ -72,6 +75,7 @@ const ProjectsPage = () => {
                 navigate={navigate}
                 onRetry={handleLoadProjects}
                 onDelete={handleDeleteClick}
+                technologies={technologies}
             />
 
             <CreateProjectModal

@@ -1,4 +1,5 @@
 import {Project} from '@/entities/project/model/types';
+import {Technology} from '@/entities/technology/model/types';
 import {Button, Text as GravityText, Icon, Label, Link, TableColumnConfig} from '@gravity-ui/uikit';
 import {CircleCheck, Folder, TrashBin} from '@gravity-ui/icons';
 import {NavigateFunction} from 'react-router-dom';
@@ -8,6 +9,7 @@ import {formatNumber} from '@/shared/lib/format/formatNumber';
 export const getProjectsTableColumns = (
     navigate: NavigateFunction,
     onDelete?: (id: string) => void,
+    technologies?: Technology[],
 ): TableColumnConfig<Project>[] => [
     {
         id: 'name',
@@ -28,6 +30,25 @@ export const getProjectsTableColumns = (
     {
         id: 'errorsCounter',
         name: 'Ошибки',
+        template: (project: Project) => {
+            if (project.openErrors === 0) {
+                return (
+                    <Label size={'m'} theme={'success'}>
+                        <Icon data={CircleCheck} size={16} />
+                    </Label>
+                );
+            }
+
+            return (
+                <Label size={'m'} theme={'warning'}>
+                    {formatNumber(project.openErrors ?? 0)}
+                </Label>
+            );
+        },
+    },
+    {
+        id: 'today',
+        name: 'Сегодня',
         template: (project: Project) => {
             if (project.openErrors === 0) {
                 return (
@@ -85,5 +106,13 @@ export const getProjectsTableColumns = (
         },
         width: 80,
         align: 'end',
+    },
+    {
+        id: 'technology',
+        name: 'Технология',
+        template: (project: Project) => {
+            const technology = technologies?.find((t) => t.id === project.technologyId);
+            return <GravityText variant="body-1">{technology?.name || 'Неизвестно'}</GravityText>;
+        },
     },
 ];

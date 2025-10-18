@@ -2,17 +2,17 @@ import {Project} from '@/entities/project/model/types';
 import {requestJson} from '@/shared/api/requestJson';
 import {ENDPOINTS} from '@/shared/api/endpoints';
 
-interface FetchProjectCreate {
+interface FetchProjectUpdate {
     name: string;
     technologyId: number;
 }
 
-export const fetchProjectCreate = async ({
-    name,
-    technologyId,
-}: FetchProjectCreate): Promise<Project> => {
-    return requestJson<Project>(ENDPOINTS.projects.root, {
-        method: 'POST',
+export const fetchProjectUpdate = async (
+    id: string,
+    {name, technologyId}: FetchProjectUpdate,
+): Promise<Project> => {
+    return requestJson<Project>(ENDPOINTS.projects.byId(id), {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
