@@ -1,7 +1,8 @@
 import {Modal} from '@/shared/ui/Modal';
-import {Button, type ModalProps, TextInput} from '@gravity-ui/uikit';
-import {useRef} from 'react';
+import {Button, type ModalProps, Select, TextInput} from '@gravity-ui/uikit';
+import {useRef, useState} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
+import {useTechnologies} from '@/features/projects/hooks/useTechnologies';
 
 interface CreateProjectModalProps extends ModalProps {
     createProject: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -15,6 +16,8 @@ export const CreateProjectModal = ({
 }: CreateProjectModalProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const formtRef = useRef<HTMLFormElement>(null);
+    const {technologies, loading: technologiesLoading} = useTechnologies();
+    const [selectedTechnologyId, setSelectedTechnologyId] = useState<string>('');
 
     const focusInput = () => {
         inputRef.current?.focus();
@@ -49,7 +52,27 @@ export const CreateProjectModal = ({
                 </div>
                 <div style={{height: 10}}></div>
                 <div>
-                    <Button loading={creatingProject} view="action" type={'submit'}>
+                    <Select
+                        name="technologyId"
+                        placeholder="Выберите технологию"
+                        value={[selectedTechnologyId]}
+                        onUpdate={(value) => setSelectedTechnologyId(value[0] || '')}
+                        options={technologies.map((tech) => ({
+                            value: tech.id.toString(),
+                            content: tech.name,
+                        }))}
+                        loading={technologiesLoading}
+                        disabled={technologiesLoading}
+                    />
+                </div>
+                <div style={{height: 10}}></div>
+                <div>
+                    <Button
+                        loading={creatingProject}
+                        view="action"
+                        type={'submit'}
+                        disabled={!selectedTechnologyId}
+                    >
                         {'Создать'}
                     </Button>
                 </div>

@@ -1,0 +1,1 @@
+export {fetchTechnologies} from './fetchTechnologies';

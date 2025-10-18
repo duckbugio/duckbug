@@ -47,7 +47,7 @@ func (r *repository) GetAll(ctx context.Context, params GetAllParams) ([]*Projec
 	}
 
 	query := `
-        SELECT id, name, public_key, created_at, updated_at, deleted_at
+        SELECT id, name, public_key, technology_id, created_at, updated_at, deleted_at
         FROM projects 
         WHERE creator_id = :creator_id AND deleted_at IS NULL
     `
@@ -107,7 +107,7 @@ func (r *repository) Count(ctx context.Context) (int, error) {
 }
 
 func (r *repository) GetByID(ctx context.Context, id string) (*Project, error) {
-	const query = `SELECT id, name, public_key, created_at, updated_at, deleted_at 
+	const query = `SELECT id, name, public_key, technology_id, created_at, updated_at, deleted_at 
 		FROM projects WHERE id = $1 AND deleted_at IS NULL`
 
 	var entity Project
@@ -128,8 +128,8 @@ func (r *repository) Create(ctx context.Context, p *Project) error {
 	}
 
 	const query = `INSERT INTO projects 
-		(id, creator_id, name, public_key, created_at, updated_at, deleted_at)
-		VALUES (:id, :creator_id, :name, :public_key, :created_at, :updated_at, null)`
+		(id, creator_id, name, public_key, technology_id, created_at, updated_at, deleted_at)
+		VALUES (:id, :creator_id, :name, :public_key, :technology_id, :created_at, :updated_at, null)`
 
 	if p.ID == "" {
 		p.ID = uuid.New().String()
@@ -151,6 +151,7 @@ func (r *repository) Create(ctx context.Context, p *Project) error {
 func (r *repository) Update(ctx context.Context, id string, updated *Project) error {
 	const query = `UPDATE projects 
 		SET name = :name,
+		    technology_id = :technology_id,
 		    updated_at = :updated_at
 		WHERE id = :id`
 

@@ -13,6 +13,7 @@ import (
 	"github.com/duckbugio/duckbug/internal/modules/log"
 	logGroup "github.com/duckbugio/duckbug/internal/modules/logGroup"
 	"github.com/duckbugio/duckbug/internal/modules/project"
+	"github.com/duckbugio/duckbug/internal/modules/technology"
 	"github.com/duckbugio/duckbug/internal/modules/users"
 	"github.com/duckbugio/duckbug/internal/server/http/handlers"
 )
@@ -35,6 +36,7 @@ func New(
 	logGroupService logGroup.Service,
 	errorService errors.Service,
 	errorGroupService errorsGroup.Service,
+	technologyService technology.Service,
 	projectService project.Service,
 	host string,
 	port int,
@@ -48,6 +50,7 @@ func New(
 		logGroupService,
 		errorService,
 		errorGroupService,
+		technologyService,
 		projectService,
 		jwtKey,
 	)

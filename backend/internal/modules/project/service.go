@@ -95,8 +95,9 @@ func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, i
 
 func (s *service) Create(ctx context.Context, req *Create) (*Entity, error) {
 	project := &Project{
-		ID:   uuid.New().String(),
-		Name: req.Name,
+		ID:           uuid.New().String(),
+		Name:         req.Name,
+		TechnologyID: req.TechnologyID,
 	}
 
 	if err := s.repo.Create(ctx, project); err != nil {
@@ -115,6 +116,9 @@ func (s *service) Update(ctx context.Context, id string, req *Update) (*Entity, 
 	if req.Name != "" {
 		project.Name = req.Name
 	}
+	if req.TechnologyID != 0 {
+		project.TechnologyID = req.TechnologyID
+	}
 
 	if err := s.repo.Update(ctx, id, project); err != nil {
 		return nil, err
@@ -129,7 +133,8 @@ func (s *service) Delete(ctx context.Context, id string) error {
 
 func toResponse(p *Project) *Entity {
 	return &Entity{
-		ID:   p.ID,
-		Name: p.Name,
+		ID:           p.ID,
+		Name:         p.Name,
+		TechnologyID: p.TechnologyID,
 	}
 }
