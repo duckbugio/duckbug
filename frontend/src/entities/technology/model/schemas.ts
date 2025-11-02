@@ -6,3 +6,8 @@ export const TechnologySchema = z.object({
     description: z.string(),
     exampleDsnConnection: z.string(),
 });
+
+export const TechnologyListSchema = z.object({
+    count: z.number(),
+    items: TechnologySchema.array(),
+});
