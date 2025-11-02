@@ -443,8 +443,12 @@ definitions:
       name:
         example: New project
         type: string
+      technologyId:
+        example: 1
+        type: integer
     required:
     - name
+    - technologyId
     type: object
   project.Entity:
     properties:
@@ -461,6 +465,9 @@ definitions:
         description: Aggregated stats
         example: 5
         type: integer
+      technologyId:
+        example: 1
+        type: integer
     type: object
   project.EntityList:
     properties:
@@ -476,8 +483,36 @@ definitions:
       name:
         example: New project
         type: string
+      technologyId:
+        example: 1
+        type: integer
     required:
     - name
+    - technologyId
+    type: object
+  technology.Entity:
+    properties:
+      description:
+        example: Mobile app development framework
+        type: string
+      exampleDsnConnection:
+        example: postgresql://user:password@localhost:5432/mydb
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: React Native
+        type: string
+    type: object
+  technology.EntityList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/technology.Entity'
+        type: array
     type: object
   users.Login:
     properties:
@@ -1399,6 +1434,21 @@ paths:
       summary: Signup
       tags:
       - auth
+  /v1/technologies:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all available technologies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of technologies
+          schema:
+            $ref: '#/definitions/technology.EntityList'
+      summary: Get all technologies
+      tags:
+      - technologies
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

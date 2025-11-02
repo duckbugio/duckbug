@@ -1,6 +1,7 @@
-import {apiClient} from '@/shared/api/apiClient';
 import {requestWithSchema} from '@/shared/api/requestWithSchema';
-import {TechnologySchema} from '../model';
+import {TechnologyListSchema} from '../model';
 
-export const fetchTechnologies = () =>
-    requestWithSchema(apiClient.get('/technologies'), TechnologySchema.array());
+export const fetchTechnologies = async () => {
+    const response = await requestWithSchema('/technologies', TechnologyListSchema);
+    return response.items;
+};
