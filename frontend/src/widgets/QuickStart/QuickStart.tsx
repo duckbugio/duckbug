@@ -32,7 +32,6 @@ const CodeBlock: React.FC<{children: React.ReactNode; className?: string}> = ({
 };
 
 const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
-    // Заменяем плейсхолдер DSN на реальный DSN в markdown
     const markdownWithDsn = exampleDsnConnection
         ? exampleDsnConnection.replace(/YOUR_DSN_HERE/g, dsn)
         : '';
@@ -48,19 +47,9 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            code(props: any) {
-                                const {inline, className, children, ...rest} = props;
-                                if (inline) {
-                                    return (
-                                        <code className={className} {...rest}>
-                                            {children}
-                                        </code>
-                                    );
-                                }
-                                return (
-                                    <CodeBlock className={className}>{children}</CodeBlock>
-                                );
+                            code(props) {
+                                const {className, children} = props;
+                                return <CodeBlock className={className}>{children}</CodeBlock>;
                             },
                         }}
                     >
