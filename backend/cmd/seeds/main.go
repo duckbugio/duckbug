@@ -48,32 +48,37 @@ func loadConfig(path string) (Config, error) {
 
 func main() {
 	flag.Parse()
+	os.Exit(run())
+}
 
+func run() int {
 	config, err := loadConfig(configFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	if config.Postgres.Dsn == "" {
 		fmt.Fprintf(os.Stderr, "Error: POSTGRES_DSN is not set\n")
-		os.Exit(1)
+		return 1
 	}
 
 	fmt.Printf("Connecting to database...\n")
 	db, err := sqlx.Connect("postgres", config.Postgres.Dsn)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to connect to database: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
+
 	defer db.Close()
 
 	fmt.Println("🌱 Running seeds...")
 
 	if err := seeds.SeedTechnologies(db); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to seed technologies: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	fmt.Println("✅ All seeds completed successfully!")
+	return 0
 }
