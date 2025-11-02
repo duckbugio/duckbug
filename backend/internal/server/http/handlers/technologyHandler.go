@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/duckbugio/duckbug/internal/modules/technology"
 	"github.com/duckbugio/duckbug/pkg/httputils"
@@ -26,6 +27,7 @@ func RegisterTechnologyHandlers(
 	routerV1 := r.PathPrefix("/v1/technologies").Subrouter()
 
 	routerV1.HandleFunc("", h.GetAll).Methods(http.MethodGet)
+	routerV1.HandleFunc("/{id}", h.GetByID).Methods(http.MethodGet)
 }
 
 // GetAll godoc
@@ -44,4 +46,36 @@ func (h *technologyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httputils.RespondWithJSON(w, http.StatusOK, httputils.NewListResponse(len(technologies), technologies))
+}
+
+// GetByID godoc
+// @Summary Get a technology by ID
+// @Description Get a technology by ID
+// @Tags technologies
+// @Accept json
+// @Produce json
+// @Success 200 {object} technology.Entity
+// @Param id path int true "Technology ID"
+// @Router /v1/technologies/{id} [get].
+func (h *technologyHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	if idStr == "" {
+		httputils.RespondWithPlainError(w, http.StatusBadRequest, "id is required")
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		httputils.RespondWithPlainError(w, http.StatusBadRequest, "invalid id format")
+		return
+	}
+
+	entity, err := h.service.GetByID(r.Context(), id)
+	if err != nil {
+		httputils.RespondWithPlainError(w, http.StatusNotFound, err.Error())
+		return
+	}
+
+	httputils.RespondWithJSON(w, http.StatusOK, entity)
 }

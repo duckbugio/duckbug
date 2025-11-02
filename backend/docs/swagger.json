@@ -1406,6 +1406,38 @@
                     }
                 }
             }
+        },
+        "/v1/technologies/{id}": {
+            "get": {
+                "description": "Get a technology by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technologies"
+                ],
+                "summary": "Get a technology by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/technology.Entity"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

@@ -3,6 +3,7 @@ const ERROR_GROUPS_ROOT = '/error-groups';
 const LOGS_ROOT = '/logs';
 const LOG_GROUPS_ROOT = '/log-groups';
 const PROJECTS_ROOT = '/projects';
+const TECHNOLOGIES_ROOT = '/technologies';
 
 export const ENDPOINTS = {
     auth: {
@@ -29,5 +30,9 @@ export const ENDPOINTS = {
         root: PROJECTS_ROOT,
         byId: (id: string) => `${PROJECTS_ROOT}/${id}`,
         dsn: (id: string) => `${PROJECTS_ROOT}/${id}/dsn`,
+    },
+    technologies: {
+        root: TECHNOLOGIES_ROOT,
+        byId: (id: number) => `${TECHNOLOGIES_ROOT}/${id}`,
     },
 } as const;

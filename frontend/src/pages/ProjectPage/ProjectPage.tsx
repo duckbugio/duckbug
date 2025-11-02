@@ -22,7 +22,7 @@ const ProjectPage = () => {
     const {projectId} = useParams();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<TabsState>(TabsState.ERRORS);
-    const {project, dsn, loading, error} = useProject({id: projectId ?? ''});
+    const {project, dsn, technology, loading, error} = useProject({id: projectId ?? ''});
 
     const {
         logGroups: logs,
@@ -75,7 +75,9 @@ const ProjectPage = () => {
                 logsTotal={logsTotal}
             />
 
-            {activeTab === TabsState.QUICK_START && <QuickStart language={'php'} dsn={dsn} />}
+            {activeTab === TabsState.QUICK_START && (
+                <QuickStart dsn={dsn} exampleDsnConnection={technology?.exampleDsnConnection} />
+            )}
 
             {activeTab === TabsState.ERRORS && (
                 <>
