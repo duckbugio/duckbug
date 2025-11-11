@@ -72,24 +72,42 @@ func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, i
 		return nil, 0, err
 	}
 
+	// Collect project IDs for batch queries
+	projectIDs := make([]string, 0, len(projects))
+	for _, project := range projects {
+		projectIDs = append(projectIDs, project.ID)
+	}
+
+	// Batch fetch error counts and log stats if repos are available
+	var errorCounts map[string]int
+	var logStats map[string]*moduleLog.Stats
+
+	if s.errorGroupsRepo != nil && len(projectIDs) > 0 {
+		errorCounts, _ = s.errorGroupsRepo.BatchCountByProjectIDs(ctx, projectIDs, moduleErrorsGroup.StatusUnresolved)
+	}
+
+	if s.logsRepo != nil && len(projectIDs) > 0 {
+		logStats, _ = s.logsRepo.BatchGetStatsByProjectIDs(ctx, projectIDs)
+	}
+
+	// Build responses with batch-fetched stats
 	responses := make([]*Entity, 0, len(projects))
 	for _, project := range projects {
-		// Default values if stats repos not wired
 		entity := toResponse(project)
-		if s.errorGroupsRepo != nil {
-			// unresolved error groups count
-			count, _ := s.errorGroupsRepo.Count(ctx, moduleErrorsGroup.FilterParams{ProjectID: project.ID, Status: string(moduleErrorsGroup.StatusUnresolved)})
-			entity.OpenErrors = count
+
+		if errorCounts != nil {
+			entity.OpenErrors = errorCounts[project.ID]
 		}
-		if s.logsRepo != nil {
-			// logs last 24h using stats repository method
-			stats, _ := s.logsRepo.GetStats(ctx, project.ID, "")
-			if stats != nil {
+
+		if logStats != nil {
+			if stats := logStats[project.ID]; stats != nil {
 				entity.LogsLast24h = stats.Last24h
 			}
 		}
+
 		responses = append(responses, entity)
 	}
+
 	return responses, total, nil
 }
 
