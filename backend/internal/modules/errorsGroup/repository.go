@@ -15,6 +15,7 @@ var ErrNotFound = errors.New("not found")
 type Repository interface {
 	GetAll(ctx context.Context, params GetAllParams) ([]*Group, error)
 	Count(ctx context.Context, params FilterParams) (int, error)
+	BatchCountByProjectIDs(ctx context.Context, projectIDs []string, status Status) (map[string]int, error)
 	GetByID(ctx context.Context, id string) (*Group, error)
 	UpdateStatus(ctx context.Context, id string, status Status) error
 	BatchUpdateStatus(ctx context.Context, ids []string, status Status) error
@@ -86,6 +87,58 @@ func (r *repository) Count(ctx context.Context, params FilterParams) (int, error
 	}
 
 	return count, nil
+}
+
+func (r *repository) BatchCountByProjectIDs(ctx context.Context, projectIDs []string, status Status) (map[string]int, error) {
+	if len(projectIDs) == 0 {
+		return make(map[string]int), nil
+	}
+
+	query := `
+		SELECT project_id, COUNT(*) as count
+		FROM error_groups
+		WHERE project_id = ANY(:projectIds) AND status = :status
+		GROUP BY project_id
+	`
+
+	args := map[string]interface{}{
+		"projectIds": pq.Array(projectIDs),
+		"status":     string(status),
+	}
+
+	query, namedArgs, err := sqlx.Named(query, args)
+	if err != nil {
+		return nil, fmt.Errorf("failed to prepare named query: %w", err)
+	}
+
+	query = r.db.Rebind(query)
+
+	r.logger.Debug(query)
+
+	type resultRow struct {
+		ProjectID string `db:"project_id"`
+		Count     int    `db:"count"`
+	}
+
+	var rows []resultRow
+	err = r.db.SelectContext(ctx, &rows, query, namedArgs...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to batch count error groups: %w", err)
+	}
+
+	result := make(map[string]int, len(projectIDs))
+	for _, row := range rows {
+		result[row.ProjectID] = row.Count
+	}
+
+	// Ensure all project IDs are in the result map with 0 count
+	for _, projectID := range projectIDs {
+		if _, exists := result[projectID]; !exists {
+			result[projectID] = 0
+		}
+	}
+
+	return result, nil
 }
 
 func (r *repository) GetByID(ctx context.Context, id string) (*Group, error) {
