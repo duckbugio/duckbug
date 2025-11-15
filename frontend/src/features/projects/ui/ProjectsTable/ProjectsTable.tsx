@@ -1,3 +1,4 @@
+import {useMemo} from 'react';
 import {DataFetchError} from '@/shared/ui/DataFetchError';
 import {DataLoader} from '@/shared/ui/DataLoader';
 import {Project} from '@/entities/project/model/types';
@@ -22,13 +23,18 @@ export const ProjectsTable = ({
     onRetry,
     onDelete,
 }: ProjectsListProps) => {
+    const columns = useMemo(
+        () => getProjectsTableColumns(navigate, onDelete),
+        [navigate, onDelete]
+    );
+
     if (loading) return <DataLoader />;
     if (error) return <DataFetchError errorMessage={error} onRetry={onRetry} />;
 
     return (
         <Table
             data={projects}
-            columns={getProjectsTableColumns(navigate, onDelete)}
+            columns={columns}
             emptyMessage="Нет доступных проектов"
         />
     );

@@ -109,6 +109,7 @@ func (h *projectHandler) GetDSNByID(w http.ResponseWriter, r *http.Request) {
 // @Param sort query string false "Sort order (asc or desc)" default(desc) Enums(asc, desc)
 // @Param limit query int false "Items per page" default(50)
 // @Param offset query int false "Offset for pagination" default(0)
+// @Param includeStats query bool false "Include error counts and log stats" default(false)
 // @Success 200 {object} project.EntityList "Successfully retrieved list of projects"
 // @Security BearerAuth
 // @Router /v1/projects [get].
@@ -130,10 +131,13 @@ func (h *projectHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		sortOrder = httputils.DefaultSort
 	}
 
+	includeStats := queryParams.Get("includeStats") == "true"
+
 	params := project.GetAllParams{
-		SortOrder: sortOrder,
-		Limit:     limit,
-		Offset:    offset,
+		SortOrder:    sortOrder,
+		Limit:        limit,
+		Offset:       offset,
+		IncludeStats: includeStats,
 	}
 
 	projects, totalCount, err := h.service.GetAll(r.Context(), params)

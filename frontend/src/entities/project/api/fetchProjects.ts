@@ -13,16 +13,19 @@ interface ProjectsResponse {
 interface FetchProjectsParams {
     page: number;
     pageSize: number;
+    includeStats?: boolean;
 }
 
 export const fetchProjects = async ({
     page,
     pageSize,
+    includeStats = true,
 }: FetchProjectsParams): Promise<ProjectsResponse> => {
     const params = buildSearchParams({
         sort: 'desc',
         limit: pageSize,
         offset: (page - 1) * pageSize,
+        includeStats: includeStats ? 'true' : 'false',
     });
 
     const PageSchema = createPageSchema(ProjectSchema);

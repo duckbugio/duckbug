@@ -20,8 +20,7 @@ var (
 )
 
 type Repository interface {
-	GetAll(ctx context.Context, params GetAllParams) ([]*Project, error)
-	Count(ctx context.Context) (int, error)
+	GetAll(ctx context.Context, params GetAllParams) ([]*Project, int, error)
 	GetByID(ctx context.Context, id string) (*Project, error)
 	Create(ctx context.Context, project *Project) error
 	Update(ctx context.Context, id string, project *Project) error
@@ -40,16 +39,21 @@ func NewRepository(db *sqlx.DB, logger Logger) Repository {
 	}
 }
 
-func (r *repository) GetAll(ctx context.Context, params GetAllParams) ([]*Project, error) {
+func (r *repository) GetAll(ctx context.Context, params GetAllParams) ([]*Project, int, error) {
 	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return nil, fmt.Errorf("unauthorized")
+		return nil, 0, fmt.Errorf("unauthorized")
 	}
 
+	// Use COUNT(*) OVER() to get total count in a single query
 	query := `
-        SELECT id, name, public_key, created_at, updated_at, deleted_at
+        SELECT 
+            id, name, public_key, created_at, updated_at, deleted_at,
+            COUNT(*) OVER() as total_count
         FROM projects 
         WHERE creator_id = :creator_id AND deleted_at IS NULL
+        ORDER BY created_at ` + params.SortOrder + `
+        LIMIT :limit OFFSET :offset
     `
 
 	args := map[string]interface{}{
@@ -58,52 +62,51 @@ func (r *repository) GetAll(ctx context.Context, params GetAllParams) ([]*Projec
 		"offset":     params.Offset,
 	}
 
-	query += " ORDER BY id " + params.SortOrder
-	query += " LIMIT :limit OFFSET :offset"
-
 	query, namedArgs, err := sqlx.Named(query, args)
 	if err != nil {
-		return nil, fmt.Errorf("failed to prepare named query: %w", err)
+		return nil, 0, fmt.Errorf("failed to prepare named query: %w", err)
 	}
 
 	query = r.db.Rebind(query)
 
 	r.logger.Debug(query)
 
-	var projects []*Project
-	err = r.db.SelectContext(ctx, &projects, query, namedArgs...)
+	type projectRow struct {
+		ID        string  `db:"id"`
+		Name      string  `db:"name"`
+		PublicKey string  `db:"public_key"`
+		CreatedAt int64   `db:"created_at"`
+		UpdatedAt int64   `db:"updated_at"`
+		DeletedAt *int64  `db:"deleted_at"`
+		TotalCount int    `db:"total_count"`
+	}
+
+	var rows []projectRow
+	err = r.db.SelectContext(ctx, &rows, query, namedArgs...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get projects: %w", err)
-	}
-	return projects, nil
-}
-
-func (r *repository) Count(ctx context.Context) (int, error) {
-	userID, ok := middleware.GetUserID(ctx)
-	if !ok {
-		return 0, fmt.Errorf("unauthorized")
+		return nil, 0, fmt.Errorf("failed to get projects: %w", err)
 	}
 
-	query := "SELECT COUNT(*) FROM projects WHERE creator_id = :creator_id AND deleted_at IS NULL"
-
-	args := map[string]interface{}{
-		"creator_id": userID,
+	projects := make([]*Project, 0, len(rows))
+	var totalCount int
+	for i, row := range rows {
+		projects = append(projects, &Project{
+			ID:        row.ID,
+			Name:      row.Name,
+			PublicKey: row.PublicKey,
+			CreatedAt: row.CreatedAt,
+			UpdatedAt: row.UpdatedAt,
+			DeletedAt: row.DeletedAt,
+		})
+		// Total count is the same for all rows, take it from the first one
+		if i == 0 {
+			totalCount = row.TotalCount
+		}
 	}
 
-	query, namedArgs, err := sqlx.Named(query, args)
-	if err != nil {
-		return 0, fmt.Errorf("failed to prepare named query: %w", err)
-	}
+	// If no rows returned, totalCount will be 0 (default value)
 
-	query = r.db.Rebind(query)
-
-	var count int
-	err = r.db.GetContext(ctx, &count, query, namedArgs...)
-	if err != nil {
-		return 0, err
-	}
-
-	return count, nil
+	return projects, totalCount, nil
 }
 
 func (r *repository) GetByID(ctx context.Context, id string) (*Project, error) {
