@@ -8,9 +8,10 @@ type Logger interface {
 }
 
 type GetAllParams struct {
-	SortOrder string `validate:"omitempty,oneof=asc desc"`
-	Limit     int
-	Offset    int
+	SortOrder   string `validate:"omitempty,oneof=asc desc"`
+	Limit       int
+	Offset      int
+	IncludeStats bool // If true, fetch error counts and log stats
 }
 
 type Create struct {

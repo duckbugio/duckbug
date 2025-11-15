@@ -2,6 +2,7 @@ package project
 
 import (
 	"context"
+	"fmt"
 
 	moduleErrors "github.com/duckbugio/duckbug/internal/modules/errors"
 	moduleErrorsGroup "github.com/duckbugio/duckbug/internal/modules/errorsGroup"
@@ -62,14 +63,18 @@ func (s *service) GetDSNByID(ctx context.Context, id string) (string, error) {
 }
 
 func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, int, error) {
-	projects, err := s.repo.GetAll(ctx, params)
+	projects, total, err := s.repo.GetAll(ctx, params)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	total, err := s.repo.Count(ctx)
-	if err != nil {
-		return nil, 0, err
+	// Early return if no stats needed and no projects
+	if !params.IncludeStats || len(projects) == 0 {
+		responses := make([]*Entity, 0, len(projects))
+		for _, project := range projects {
+			responses = append(responses, toResponse(project))
+		}
+		return responses, total, nil
 	}
 
 	// Collect project IDs for batch queries
@@ -82,12 +87,22 @@ func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, i
 	var errorCounts map[string]int
 	var logStats map[string]*moduleLog.Stats
 
-	if s.errorGroupsRepo != nil && len(projectIDs) > 0 {
-		errorCounts, _ = s.errorGroupsRepo.BatchCountByProjectIDs(ctx, projectIDs, moduleErrorsGroup.StatusUnresolved)
+	if s.errorGroupsRepo != nil {
+		var err error
+		errorCounts, err = s.errorGroupsRepo.BatchCountByProjectIDs(ctx, projectIDs, moduleErrorsGroup.StatusUnresolved)
+		if err != nil {
+			s.logger.Warn(fmt.Sprintf("failed to batch fetch error counts: %v", err))
+			// Continue without error counts
+		}
 	}
 
-	if s.logsRepo != nil && len(projectIDs) > 0 {
-		logStats, _ = s.logsRepo.BatchGetStatsByProjectIDs(ctx, projectIDs)
+	if s.logsRepo != nil {
+		var err error
+		logStats, err = s.logsRepo.BatchGetStatsByProjectIDs(ctx, projectIDs)
+		if err != nil {
+			s.logger.Warn(fmt.Sprintf("failed to batch fetch log stats: %v", err))
+			// Continue without log stats
+		}
 	}
 
 	// Build responses with batch-fetched stats
@@ -95,13 +110,15 @@ func (s *service) GetAll(ctx context.Context, params GetAllParams) ([]*Entity, i
 	for _, project := range projects {
 		entity := toResponse(project)
 
-		if errorCounts != nil {
-			entity.OpenErrors = errorCounts[project.ID]
-		}
+		if params.IncludeStats {
+			if errorCounts != nil {
+				entity.OpenErrors = errorCounts[project.ID]
+			}
 
-		if logStats != nil {
-			if stats := logStats[project.ID]; stats != nil {
-				entity.LogsLast24h = stats.Last24h
+			if logStats != nil {
+				if stats := logStats[project.ID]; stats != nil {
+					entity.LogsLast24h = stats.Last24h
+				}
 			}
 		}
 

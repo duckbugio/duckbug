@@ -9,10 +9,11 @@ import {CreateProjectModal} from './components/CreateProjectModal';
 import {DeleteProjectModal} from './components/DeleteProjectModal';
 import {useCreateProject} from '@/features/projects/hooks/useCreateProject';
 import {useDeleteProject} from '@/features/projects/hooks/useDeleteProject';
+import {PaginationWithControls} from '@/shared/ui/PaginationWithControls';
 
 const ProjectsPage = () => {
     const navigate = useNavigate();
-    const {projects, loading, error, handleLoadProjects} = useProjects({});
+    const {projects, total, loading, error, page, pageSize, setPage, setPageSize, handleLoadProjects} = useProjects({});
     const [open, setOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState<{id: string; name: string} | null>(null);
@@ -72,6 +73,14 @@ const ProjectsPage = () => {
                 navigate={navigate}
                 onRetry={handleLoadProjects}
                 onDelete={handleDeleteClick}
+            />
+
+            <PaginationWithControls
+                page={page}
+                pageSize={pageSize}
+                total={total}
+                onPageChange={setPage}
+                onPageSizeChange={setPageSize}
             />
 
             <CreateProjectModal
