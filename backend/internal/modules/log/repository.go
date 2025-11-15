@@ -103,9 +103,9 @@ func (r *repository) GetStats(ctx context.Context, projectID string, fingerprint
 
 	query := `
         SELECT
-            SUM(CASE WHEN time >= :last24hFrom THEN 1 ELSE 0 END) AS last_24h,
-            SUM(CASE WHEN time >= :last7dFrom THEN 1 ELSE 0 END)   AS last_7d,
-            SUM(CASE WHEN time >= :last30dFrom THEN 1 ELSE 0 END)  AS last_30d
+            COALESCE(SUM(CASE WHEN time >= :last24hFrom THEN 1 ELSE 0 END), 0) AS last_24h,
+            COALESCE(SUM(CASE WHEN time >= :last7dFrom THEN 1 ELSE 0 END), 0)   AS last_7d,
+            COALESCE(SUM(CASE WHEN time >= :last30dFrom THEN 1 ELSE 0 END), 0)  AS last_30d
         FROM logs
         WHERE project_id = :projectId
     `
@@ -163,9 +163,9 @@ func (r *repository) BatchGetStatsByProjectIDs(ctx context.Context, projectIDs [
 	query := `
         SELECT
             project_id,
-            SUM(CASE WHEN time >= :last24hFrom THEN 1 ELSE 0 END) AS last_24h,
-            SUM(CASE WHEN time >= :last7dFrom THEN 1 ELSE 0 END)   AS last_7d,
-            SUM(CASE WHEN time >= :last30dFrom THEN 1 ELSE 0 END)  AS last_30d
+            COALESCE(SUM(CASE WHEN time >= :last24hFrom THEN 1 ELSE 0 END), 0) AS last_24h,
+            COALESCE(SUM(CASE WHEN time >= :last7dFrom THEN 1 ELSE 0 END), 0)   AS last_7d,
+            COALESCE(SUM(CASE WHEN time >= :last30dFrom THEN 1 ELSE 0 END), 0)  AS last_30d
         FROM logs
         WHERE project_id = ANY(:projectIds)
         GROUP BY project_id
