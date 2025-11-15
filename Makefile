@@ -89,6 +89,10 @@ backend-swagger:
 	@echo "📚 Generating Swagger docs..."
 	docker compose run --rm backend-lint swag init -g ./cmd/duckbug/main.go
 
+backend-update-deps:
+	@echo "📦 Updating backend dependencies..."
+	docker run --rm -v $(PWD)/backend:/app -w /app golang:1.25-alpine sh -c "go get -u ./... && go mod tidy"
+
 # Testing
 test: frontend-test backend-test ## Run all tests
 
