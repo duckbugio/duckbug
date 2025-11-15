@@ -9,6 +9,7 @@ import (
 	"github.com/duckbugio/duckbug/internal/modules/log"
 	logGroup "github.com/duckbugio/duckbug/internal/modules/logGroup"
 	"github.com/duckbugio/duckbug/internal/modules/project"
+	"github.com/duckbugio/duckbug/internal/modules/technology"
 	"github.com/duckbugio/duckbug/internal/modules/users"
 	"github.com/duckbugio/duckbug/internal/server/http/handlers"
 	"github.com/gorilla/mux"
@@ -23,6 +24,7 @@ func NewHandler(
 	logGroupService logGroup.Service,
 	errorService errors.Service,
 	errorGroupService errorsGroup.Service,
+	technologyService technology.Service,
 	projectService project.Service,
 	jwtKey []byte,
 ) http.Handler {
@@ -38,6 +40,7 @@ func NewHandler(
 	handlers.RegisterLogGroupHandlers(r, logger, logGroupService, jwtKey)
 	handlers.RegisterErrorHandlers(r, logger, errorService, jwtKey)
 	handlers.RegisterErrorGroupHandlers(r, logger, errorGroupService, jwtKey)
+	handlers.RegisterTechnologyHandlers(r, logger, technologyService)
 	handlers.RegisterProjectHandlers(r, logger, projectService, jwtKey)
 
 	return r

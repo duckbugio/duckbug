@@ -1391,6 +1391,61 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/technologies": {
+            "get": {
+                "description": "Retrieves a list of all available technologies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technologies"
+                ],
+                "summary": "Get all technologies",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved list of technologies",
+                        "schema": {
+                            "$ref": "#/definitions/technology.EntityList"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/technologies/{id}": {
+            "get": {
+                "description": "Get a technology by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technologies"
+                ],
+                "summary": "Get a technology by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/technology.Entity"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1867,12 +1922,17 @@ const docTemplate = `{
         "project.Create": {
             "type": "object",
             "required": [
-                "name"
+                "name",
+                "technologyId"
             ],
             "properties": {
                 "name": {
                     "type": "string",
                     "example": "New project"
+                },
+                "technologyId": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -1895,6 +1955,10 @@ const docTemplate = `{
                     "description": "Aggregated stats",
                     "type": "integer",
                     "example": 5
+                },
+                "technologyId": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -1915,12 +1979,52 @@ const docTemplate = `{
         "project.Update": {
             "type": "object",
             "required": [
-                "name"
+                "name",
+                "technologyId"
             ],
             "properties": {
                 "name": {
                     "type": "string",
                     "example": "New project"
+                },
+                "technologyId": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "technology.Entity": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Mobile app development framework"
+                },
+                "exampleDsnConnection": {
+                    "type": "string",
+                    "example": "postgresql://user:password@localhost:5432/mydb"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "React Native"
+                }
+            }
+        },
+        "technology.EntityList": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/technology.Entity"
+                    }
                 }
             }
         },
