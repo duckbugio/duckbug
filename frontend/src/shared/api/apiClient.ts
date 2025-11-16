@@ -1,5 +1,12 @@
 import {API_BASE_URL} from '@/shared/config/api';
 import {ENDPOINTS} from '@/shared/api/endpoints';
+import {
+    getAccessToken as getStoredAccessToken,
+    getRefreshToken as getStoredRefreshToken,
+    setAccessToken as storeAccessToken,
+    setRefreshToken as storeRefreshToken,
+    clearTokens,
+} from '@/shared/lib/auth/storage';
 
 let logoutHandler: (() => void) | null = null;
 
@@ -51,9 +58,9 @@ const tryRefreshTokens = async (
                 refreshToken: newRefreshToken,
             });
         } else {
-            localStorage.setItem('accessToken', newAccessToken);
+            storeAccessToken(newAccessToken);
             if (newRefreshToken) {
-                localStorage.setItem('refreshToken', newRefreshToken);
+                storeRefreshToken(newRefreshToken);
             }
         }
         return {accessToken: newAccessToken, refreshToken: newRefreshToken ?? null};
@@ -66,9 +73,7 @@ export const apiClient = async (input: string, init?: RequestInit) => {
     if (input.startsWith('http://') || input.startsWith('https://')) {
         throw new Error('Absolute URLs are not allowed in apiClient. Use relative paths only.');
     }
-    const accessToken = accessTokenProvider
-        ? accessTokenProvider()
-        : localStorage.getItem('accessToken');
+    const accessToken = accessTokenProvider ? accessTokenProvider() : getStoredAccessToken();
 
     const headers = new Headers(init?.headers);
     if (accessToken) {
@@ -81,9 +86,7 @@ export const apiClient = async (input: string, init?: RequestInit) => {
     });
 
     if (response.status === 401) {
-        const refreshToken = refreshTokenProvider
-            ? refreshTokenProvider()
-            : localStorage.getItem('refreshToken');
+        const refreshToken = refreshTokenProvider ? refreshTokenProvider() : getStoredRefreshToken();
         if (!refreshToken) {
             if (logoutHandler) logoutHandler();
             return response;
@@ -91,10 +94,7 @@ export const apiClient = async (input: string, init?: RequestInit) => {
 
         const refreshed = await tryRefreshTokens(refreshToken);
         if (!refreshed) {
-            try {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-            } catch {}
+            clearTokens();
             if (logoutHandler) logoutHandler();
             return response;
         }
