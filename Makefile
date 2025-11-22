@@ -89,6 +89,10 @@ backend-swagger:
 	@echo "📚 Generating Swagger docs..."
 	docker compose run --rm backend-lint swag init -g ./cmd/duckbug/main.go
 
+backend-seed: ## Run database seeds
+	@echo "🌱 Running database seeds..."
+	docker compose run --rm backend-lint go run ./cmd/seeds/main.go -config=$(or $(CONFIG_FILE),./configs/duckbug/config.json) 
+
 # Testing
 test: frontend-test backend-test ## Run all tests
 

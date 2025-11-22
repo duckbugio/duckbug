@@ -5,7 +5,7 @@ import {useState} from 'react';
 export const useCreateProject = (onProjectCreated: (project: Project) => void) => {
     const [loading, setLoading] = useState(false);
 
-    const createProject = async (params: {name: string}) => {
+    const createProject = async (params: {name: string; technologyId: number}) => {
         try {
             setLoading(true);
             const result = await fetchProjectCreate(params);
