@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from 'react-router-dom';
+import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {PageContainer} from '@/shared/ui/PageContainer';
 import {LogsFilters} from '@/features/logs/ui/LogsFilters/LogsFilters';
 import {PaginationWithControls} from '@/shared/ui/PaginationWithControls';
@@ -7,7 +7,7 @@ import {useProject} from '@/features/projects/hooks/useProject';
 import {DataLoader} from '@/shared/ui/DataLoader';
 import {DataFetchError} from '@/shared/ui/DataFetchError';
 import QuickStart from '@/widgets/QuickStart/QuickStart';
-import {useState} from 'react';
+import {useMemo, useEffect} from 'react';
 import ProjectTabs, {TabsState} from '@/features/projects/ui/ProjectTabs/ProjectTabs';
 import {ErrorGroupsFilters} from '@/features/errors/ui/ErrorGroupsFilters';
 import {ErrorGroupsTable} from '@/features/errors/ui/ErrorGroupsTable';
@@ -21,7 +21,32 @@ import {useLogGroups} from '@/features/logs/hooks/useLogGroups';
 const ProjectPage = () => {
     const {projectId} = useParams();
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<TabsState>(TabsState.ERRORS);
+    const [searchParams, setSearchParams] = useSearchParams();
+    
+    // Определяем активный таб из URL или используем дефолтный
+    const activeTab = useMemo(() => {
+        const tabParam = searchParams.get('tab');
+        if (tabParam && Object.values(TabsState).includes(tabParam as TabsState)) {
+            return tabParam as TabsState;
+        }
+        return TabsState.ERRORS;
+    }, [searchParams]);
+    
+    // Добавляем параметр tab в URL при первой загрузке, если его нет
+    useEffect(() => {
+        if (!searchParams.get('tab')) {
+            const newSearchParams = new URLSearchParams(searchParams);
+            newSearchParams.set('tab', TabsState.ERRORS);
+            setSearchParams(newSearchParams, {replace: true});
+        }
+    }, [searchParams, setSearchParams]);
+    
+    // Обработчик изменения таба с обновлением URL (сохраняем остальные параметры)
+    const handleTabChange = (newTab: TabsState) => {
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set('tab', newTab);
+        setSearchParams(newSearchParams);
+    };
     const {project, dsn, technology, loading, error} = useProject({id: projectId ?? ''});
 
     const {
@@ -70,7 +95,7 @@ const ProjectPage = () => {
 
             <ProjectTabs
                 activeTab={activeTab}
-                setActiveTab={setActiveTab}
+                setActiveTab={handleTabChange}
                 errorsTotal={errorsTotal}
                 logsTotal={logsTotal}
             />
