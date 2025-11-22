@@ -16,34 +16,34 @@ func SeedTechnologies(db *sqlx.DB) error {
 	now := time.Now().Unix()
 
 	javascriptMarkdown := "## Install\n\n" +
-		"To install the DuckBug JavaScript SDK, use npm or yarn:\n\n" +
-		"```bash\nnpm install @duckbug/js\n# or\nyarn add @duckbug/js\n```\n\n" +
+		"To install the DuckBug JavaScript SDK, use npm, yarn or pnpm:\n\n" +
+		"```bash\nnpm install @duckbug/js\n# or\nyarn add @duckbug/js\n# or\npnpm add @duckbug/js\n```\n\n" +
 		"## Configure SDK\n\n" +
 		"To capture all errors, initialize the DuckBug JavaScript SDK as soon as possible:\n\n" +
-		"```javascript\nimport * as DuckBug from '@duckbug/js';\n\nDuckBug.init({\n  dsn: 'YOUR_DSN_HERE',\n});\n```\n\n" +
+		"```javascript\nimport { DuckSDK, DuckBugProvider } from '@duckbug/js';\n\n// Initialize with DuckBug.io provider\nconst providers = [\n  new DuckBugProvider({\n    dsn: 'YOUR_DSN_HERE'\n  })\n];\n\n// Create SDK instance with optional configuration\nconst duck = new DuckSDK(providers, {\n  logReports: {\n    log: false,\n    warn: true,\n    error: true,\n  }\n});\n```\n\n" +
 		"## Verify\n\n" +
-		"You can capture exceptions manually:\n\n" +
-		"```javascript\ntry {\n  functionThatFails();\n} catch (error) {\n  DuckBug.captureException(error);\n}\n```"
+		"You can start logging and capture errors:\n\n" +
+		"```javascript\n// Log messages\n duck.log('Info message', { userId: 123, action: 'user_login' });\n duck.debug('Debug message', { debugInfo: 'Connection established' });\n duck.warn('Warning message', { warning: 'Rate limit approaching' });\n duck.error('Error message', { error: 'Database connection failed' });\n duck.fatal('Fatal message', { error: 'Critical system failure' });\n\n// Capture exceptions\n try {\n   functionThatFails();\n } catch (error) {\n   duck.quack('ERROR_TAG', error);\n }\n```"
 
 	phpMarkdown := "## Install\n\n" +
-		"To install the PHP SDK, you need to be using Composer in your project. For more details about Composer, see the Composer documentation.\n\n" +
-		"```bash\ncomposer require duckbug/php\n```\n\n" +
+		"Install the SDK using Composer:\n\n" +
+		"```bash\ncomposer require duckbug/duckbug\n```\n\n" +
 		"## Configure SDK\n\n" +
-		"To capture all errors, even the one during the startup of your application, you should initialize the DuckBug PHP SDK as soon as possible:\n\n" +
-		"```php\nDuckBug::init([\n    Provider::setup(\n        new DuckBugProvider(\n            'YOUR_DSN_HERE',\n        )\n    ),\n]);\n```\n\n" +
+		"Initialize the SDK as early as possible in your application:\n\n" +
+		"```php\n\\DuckBug\\Duck::wake([\n    new \\DuckBug\\Core\\ProviderSetup(\n        \\DuckBug\\Providers\\DuckBugProvider::create('YOUR_DSN_HERE'),\n        true, // enable catching Throwable\n        false // disable Debug level logs\n    )\n]);\n```\n\n" +
 		"## Verify\n\n" +
-		"In PHP you can either capture a caught exception or capture the last error:\n\n" +
-		"```php\ntry {\n    $this->functionFailsForSure();\n} catch (\\Throwable $exception) {\n    DuckBug::capture($exception);\n}\n```"
+		"You can log exceptions and messages with different severity levels:\n\n" +
+		"```php\n// Log exceptions using quack()\ntry {\n    throw new \\Exception('Quack quack');\n} catch (\\Exception $exception) {\n    \\DuckBug\\Duck::get()->quack($exception);\n}\n\n// Log messages with severity levels\n\\DuckBug\\Duck::get()->warning('User not found', ['userId' => 8]);\n```"
 
 	reactMarkdown := "## Install\n\n" +
-		"To install the DuckBug React SDK, use npm or yarn:\n\n" +
-		"```bash\nnpm install @duckbug/react\n# or\nyarn add @duckbug/react\n```\n\n" +
+		"To install the DuckBug React SDK, use npm, yarn or pnpm:\n\n" +
+		"```bash\nnpm install duckbug-react\n# or\nyarn add duckbug-react\n# or\npnpm add duckbug-react\n```\n\n" +
 		"## Configure SDK\n\n" +
-		"Initialize DuckBug in your React app entry point (e.g., index.js or App.js):\n\n" +
-		"```jsx\nimport * as DuckBug from '@duckbug/react';\n\nDuckBug.init({\n  dsn: 'YOUR_DSN_HERE',\n});\n```\n\n" +
+		"Wrap your app with DuckBugWrapper in your React app entry point:\n\n" +
+		"```jsx\nimport { DuckBugWrapper, DuckBugProvider } from 'duckbug-react';\n\nconst providers = [\n  new DuckBugProvider({ dsn: 'YOUR_DSN_HERE' }),\n];\n\nconst config = {\n  logReports: {\n    log: false,\n    warn: true,\n    error: true,\n  }\n};\n\n<DuckBugWrapper providers={providers} config={config}>\n  <YourApp />\n</DuckBugWrapper>\n```\n\n" +
 		"## Verify\n\n" +
-		"You can capture errors in React components using Error Boundaries or manual capture:\n\n" +
-		"```jsx\nimport React from 'react';\nimport * as DuckBug from '@duckbug/react';\n\nclass ErrorBoundary extends React.Component {\n  componentDidCatch(error, errorInfo) {\n    DuckBug.captureException(error, {\n      contexts: {\n        react: {\n          componentStack: errorInfo.componentStack,\n        },\n      },\n    });\n  }\n\n  render() {\n    return this.props.children;\n  }\n}\n```"
+		"You can use the useDuckBug hook to access logging methods:\n\n" +
+		"```jsx\nimport { useDuckBug } from 'duckbug-react';\n\nfunction MyComponent() {\n  const duck = useDuckBug();\n\n  const handleClick = () => {\n    try {\n      // Some code...\n    } catch (err) {\n      duck.error(err);\n    }\n  };\n\n  // Logging methods\n  duck.log('Info message', { userId: 123, action: 'user_login' });\n  duck.debug('Debug message', { debugInfo: 'Connection established' });\n  duck.warn('Warning message', { warning: 'Rate limit approaching' });\n  duck.error('Error message', { error: 'Database connection failed' });\n  duck.fatal('Fatal message', { error: 'Critical system failure' });\n\n  return <button onClick={handleClick}>Send Message</button>;\n}\n```"
 
 	technologies := []*technology.Technology{
 		{
