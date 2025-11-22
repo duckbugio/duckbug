@@ -9,4 +9,3 @@ interface FetchTechnologyParams {
 
 export const fetchTechnologyById = async ({id}: FetchTechnologyParams): Promise<Technology> =>
     requestWithSchema(ENDPOINTS.technologies.byId(id), TechnologySchema);
-
