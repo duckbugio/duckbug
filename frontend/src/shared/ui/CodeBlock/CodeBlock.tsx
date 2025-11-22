@@ -8,16 +8,24 @@ type CodeBlockProps = {
 
 const CodeBlock: React.FC<CodeBlockProps> = ({children, language = 'javascript'}) => {
     const ref = useRef<HTMLElement>(null);
+    
+    // Преобразуем children в строку для отображения
+    const codeContent = typeof children === 'string' 
+        ? children.trim() 
+        : typeof children === 'object' && children !== null
+        ? JSON.stringify(children, null, 2)
+        : String(children ?? '');
+
     useEffect(() => {
         if (ref.current) {
             Prism.highlightElement(ref.current);
         }
-    }, [children]);
+    }, [codeContent]);
 
     return (
         <pre>
             <code ref={ref} className={`language-${language}`}>
-                {JSON.stringify(children, null, 2)}
+                {codeContent}
             </code>
         </pre>
     );
