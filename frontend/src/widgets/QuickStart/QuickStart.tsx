@@ -37,7 +37,7 @@ const CodeBlock: React.FC<{children: React.ReactNode; className?: string}> = ({
 
     return (
         <pre className="quick-start-code-block">
-            <code ref={codeRef} className={className} aria-label={`Code block: ${language}`}>
+            <code ref={codeRef} className={className} title={`Code block: ${language}`}>
                 {String(children).replace(/\n$/, '')}
             </code>
         </pre>
@@ -55,7 +55,7 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
             return <CodeBlock className={className}>{children}</CodeBlock>;
         },
         p({children}) {
-            return <Text as="p">{children}</Text>;
+            return <GravityText as="p">{children}</GravityText>;
         },
         h1({children}) {
             return (
@@ -73,7 +73,7 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
         },
         h3({children}) {
             return (
-                <GravityText as="h3" variant="header-3">
+                <GravityText as="h3" variant="header-2">
                     {children}
                 </GravityText>
             );
