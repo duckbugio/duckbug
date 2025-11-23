@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Card, Text} from '@gravity-ui/uikit';
+import {Card, Text as GravityText} from '@gravity-ui/uikit';
 import {CopyInput} from '@/shared/ui/CopyInput';
 import ReactMarkdown from 'react-markdown';
 import type {Components} from 'react-markdown';
@@ -58,22 +58,46 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
             return <Text as="p">{children}</Text>;
         },
         h1({children}) {
-            return <Text as="h1" variant="header-1">{children}</Text>;
+            return (
+                <GravityText as="h1" variant="header-1">
+                    {children}
+                </GravityText>
+            );
         },
         h2({children}) {
-            return <Text as="h2" variant="header-2">{children}</Text>;
+            return (
+                <GravityText as="h2" variant="header-2">
+                    {children}
+                </GravityText>
+            );
         },
         h3({children}) {
-            return <Text as="h3" variant="header-3">{children}</Text>;
+            return (
+                <GravityText as="h3" variant="header-3">
+                    {children}
+                </GravityText>
+            );
         },
         h4({children}) {
-            return <Text as="h4" variant="subheader-1">{children}</Text>;
+            return (
+                <GravityText as="h4" variant="subheader-1">
+                    {children}
+                </GravityText>
+            );
         },
         h5({children}) {
-            return <Text as="h5" variant="subheader-2">{children}</Text>;
+            return (
+                <GravityText as="h5" variant="subheader-2">
+                    {children}
+                </GravityText>
+            );
         },
         h6({children}) {
-            return <Text as="h6" variant="subheader-3">{children}</Text>;
+            return (
+                <GravityText as="h6" variant="subheader-3">
+                    {children}
+                </GravityText>
+            );
         },
         ul({children}) {
             return <ul className="quick-start-list">{children}</ul>;
@@ -86,7 +110,12 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
         },
         a({href, children}) {
             return (
-                <a href={href} target="_blank" rel="noopener noreferrer" className="quick-start-link">
+                <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="quick-start-link"
+                >
                     {children}
                 </a>
             );
