@@ -4,6 +4,7 @@ import {Button, Card, Icon, Select, TextInput} from '@gravity-ui/uikit';
 import {FunnelXmark} from '@gravity-ui/icons';
 import {DatePicker} from '@gravity-ui/date-components';
 import {dateTimeParse} from '@gravity-ui/date-utils';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 export interface ErrorGroupsFiltersFields {
     search: string;
@@ -23,12 +24,13 @@ export const ErrorGroupsFilters: FC<ErrorGroupsFiltersProps> = ({
     onFilterChange,
     onResetFilters,
 }) => {
+    const {t} = useTranslation();
     return (
         <Card style={{marginBottom: '24px', padding: '16px'}}>
             <div style={{display: 'flex', gap: '16px', flexWrap: 'wrap'}}>
                 <div style={{flex: '1', minWidth: '200px'}}>
                     <TextInput
-                        placeholder="Поиск..."
+                        placeholder={t('errors.filters.search')}
                         value={fields.search}
                         onChange={(e) => onFilterChange('search', e.target.value)}
                     />
@@ -36,11 +38,11 @@ export const ErrorGroupsFilters: FC<ErrorGroupsFiltersProps> = ({
 
                 <div style={{minWidth: '220px'}}>
                     <Select
-                        placeholder="Все статусы"
+                        placeholder={t('errors.filters.allStatuses')}
                         options={[
-                            {value: 'unresolved', content: 'Открытые'},
-                            {value: 'resolved', content: 'Решенные'},
-                            {value: 'ignored', content: 'Игнор'},
+                            {value: 'unresolved', content: t('errors.filters.unresolved')},
+                            {value: 'resolved', content: t('errors.filters.resolved')},
+                            {value: 'ignored', content: t('errors.filters.ignored')},
                         ]}
                         value={fields.status ? [fields.status] : []}
                         onUpdate={(vals) =>
@@ -53,7 +55,7 @@ export const ErrorGroupsFilters: FC<ErrorGroupsFiltersProps> = ({
                 </div>
 
                 <DatePicker
-                    placeholder="От"
+                    placeholder={t('errors.filters.from')}
                     value={fields.timeFrom ? dateTimeParse(new Date(fields.timeFrom * 1000)) : null}
                     onUpdate={(date) =>
                         onFilterChange(
@@ -66,7 +68,7 @@ export const ErrorGroupsFilters: FC<ErrorGroupsFiltersProps> = ({
                 />
 
                 <DatePicker
-                    placeholder="До"
+                    placeholder={t('errors.filters.to')}
                     value={fields.timeTo ? dateTimeParse(new Date(fields.timeTo * 1000)) : null}
                     onUpdate={(date) =>
                         onFilterChange(
@@ -79,7 +81,7 @@ export const ErrorGroupsFilters: FC<ErrorGroupsFiltersProps> = ({
                 />
 
                 <Button view="outlined" onClick={onResetFilters}>
-                    <Icon data={FunnelXmark} /> Сбросить
+                    <Icon data={FunnelXmark} /> {t('errors.filters.reset')}
                 </Button>
             </div>
         </Card>

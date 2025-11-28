@@ -4,8 +4,10 @@ import {LoginForm} from '@/features/auth/ui/LoginForm';
 import {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Alert} from '@gravity-ui/uikit';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 export const LoginPage = () => {
+    const {t} = useTranslation();
     const login = useUnit(loginFormSubmitted);
     const navigate = useNavigate();
     const location = useLocation();
@@ -38,13 +40,13 @@ export const LoginPage = () => {
                     <Alert
                         theme="danger"
                         style={{marginBottom: '20px'}}
-                        message={`Ошибка входа: ${loginError.message}`}
+                        message={`${t('auth.login.error')}: ${loginError.message}`}
                     />
                 )}
                 <LoginForm onSubmit={login} />
                 <div style={{marginTop: '20px', textAlign: 'center'}}>
                     <a href="/signup" style={{color: '#0066cc'}}>
-                        Нет аккаунта? Зарегистрироваться
+                        {t('auth.login.noAccount')}
                     </a>
                 </div>
             </div>

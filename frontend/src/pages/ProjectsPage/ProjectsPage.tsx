@@ -10,8 +10,10 @@ import {DeleteProjectModal} from './components/DeleteProjectModal';
 import {useCreateProject} from '@/features/projects/hooks/useCreateProject';
 import {useDeleteProject} from '@/features/projects/hooks/useDeleteProject';
 import {useTechnologies} from '@/features/projects/hooks/useTechnologies';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 const ProjectsPage = () => {
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const {projects, loading, error, handleLoadProjects} = useProjects({});
     const {technologies} = useTechnologies();
@@ -66,7 +68,7 @@ const ProjectsPage = () => {
 
     return (
         <PageContainer>
-            <PageTitle title={'Проекты'} addHandle={toggleModal} />
+            <PageTitle title={t('projects.title')} addHandle={toggleModal} />
 
             <ProjectsTable
                 projects={projects}

@@ -5,15 +5,17 @@ import {CircleCheck, Folder, TrashBin} from '@gravity-ui/icons';
 import {NavigateFunction} from 'react-router-dom';
 import {getProjectPath} from '@/app/url-generators';
 import {formatNumber} from '@/shared/lib/format/formatNumber';
+import {TFunction} from 'i18next';
 
 export const getProjectsTableColumns = (
     navigate: NavigateFunction,
+    t: TFunction,
     onDelete?: (id: string) => void,
     technologies?: Technology[],
 ): TableColumnConfig<Project>[] => [
     {
         id: 'name',
-        name: 'Название',
+        name: t('common.name'),
         template: (project: Project) => {
             const url = getProjectPath(project.id);
 
@@ -29,7 +31,7 @@ export const getProjectsTableColumns = (
     },
     {
         id: 'errorsCounter',
-        name: 'Ошибки',
+        name: t('projects.errors'),
         template: (project: Project) => {
             if (project.openErrors === 0) {
                 return (
@@ -48,7 +50,7 @@ export const getProjectsTableColumns = (
     },
     {
         id: 'today',
-        name: 'Сегодня',
+        name: t('common.today'),
         template: (project: Project) => {
             if (project.openErrors === 0) {
                 return (
@@ -68,7 +70,7 @@ export const getProjectsTableColumns = (
     },
     {
         id: 'logsCounter',
-        name: 'Логи',
+        name: t('projects.logs'),
         template: (project: Project) => {
             if (project.logsLast24h === 0) {
                 return (
@@ -89,7 +91,7 @@ export const getProjectsTableColumns = (
     },
     {
         id: 'actions',
-        name: 'Действия',
+        name: t('common.actions'),
         template: (project: Project) => {
             return (
                 <div style={{display: 'flex', justifyContent: 'flex-end'}}>
@@ -109,10 +111,10 @@ export const getProjectsTableColumns = (
     },
     {
         id: 'technology',
-        name: 'Технология',
+        name: t('projects.technology'),
         template: (project: Project) => {
-            const technology = technologies?.find((t) => t.id === project.technologyId);
-            return <GravityText variant="body-1">{technology?.name || 'Неизвестно'}</GravityText>;
+            const technology = technologies?.find((tech) => tech.id === project.technologyId);
+            return <GravityText variant="body-1">{technology?.name || t('common.unknown')}</GravityText>;
         },
     },
 ];

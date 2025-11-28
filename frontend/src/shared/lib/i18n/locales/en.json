@@ -1,0 +1,118 @@
+{
+  "common": {
+    "logout": "Logout",
+    "cancel": "Cancel",
+    "create": "Create",
+    "delete": "Delete",
+    "save": "Save",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "unknown": "Unknown",
+    "actions": "Actions",
+    "name": "Name",
+    "today": "Today"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account? Sign up",
+      "error": "Sign in error",
+      "required": "Required field",
+      "invalidEmail": "Invalid email",
+      "minPasswordLength": "Minimum 6 characters"
+    },
+    "signup": {
+      "title": "Sign up",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Sign up",
+      "hasAccount": "Already have an account? Sign in",
+      "successMessage": "Registration successful! You can now sign in.",
+      "error": "Sign up error",
+      "required": "Required field",
+      "invalidEmail": "Invalid email",
+      "minPasswordLength": "Minimum 6 characters",
+      "passwordsNotMatch": "Passwords do not match"
+    }
+  },
+  "menu": {
+    "projects": "Projects",
+    "logs": "Logs",
+    "errors": "Errors",
+    "dashboard": "Dashboard"
+  },
+  "projects": {
+    "title": "Projects",
+    "create": "Create project",
+    "delete": "Delete project",
+    "deleteConfirm": "Are you sure you want to delete project \"{{name}}\"? This action cannot be undone.",
+    "namePlaceholder": "Project name",
+    "selectTechnology": "Select technology",
+    "errors": "Errors",
+    "logs": "Logs",
+    "technology": "Technology",
+    "empty": "No available projects",
+    "deleteError": "Error deleting project"
+  },
+  "logs": {
+    "title": "Logs",
+    "empty": "Log list is empty"
+  },
+  "errors": {
+    "title": "Errors",
+    "events": "Events",
+    "empty": "Error list is empty",
+    "error": "Error",
+    "line": "Line",
+    "file": "File",
+    "eventsCount": "Events",
+    "firstSeen": "First seen",
+    "lastSeen": "Last seen",
+    "markAsResolved": "Mark as resolved",
+    "markAsUnresolved": "Mark as unresolved",
+    "markSelectedAsResolved": "Mark selected as resolved",
+    "filters": {
+      "search": "Search...",
+      "allStatuses": "All statuses",
+      "unresolved": "Unresolved",
+      "resolved": "Resolved",
+      "ignored": "Ignored",
+      "from": "From",
+      "to": "To",
+      "reset": "Reset"
+    }
+  },
+  "format": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}} min ago",
+    "todayAt": "today at {{time}}",
+    "yesterdayAt": "yesterday at {{time}}"
+  },
+  "errorDetail": {
+    "id": "ID",
+    "url": "URL",
+    "method": "Method",
+    "ip": "IP",
+    "headers": "Headers",
+    "queryParams": "Query Params",
+    "bodyParams": "Body Params",
+    "cookies": "Cookies",
+    "session": "Session",
+    "files": "Files"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The requested page does not exist"
+  }
+}

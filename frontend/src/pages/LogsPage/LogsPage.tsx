@@ -5,8 +5,10 @@ import {LogsFilters} from '@/features/logs/ui/LogsFilters/LogsFilters';
 import {LogsTable} from '@/features/logs/ui/LogsTable';
 import {PaginationWithControls} from '@/shared/ui/PaginationWithControls';
 import {useLogs} from '@/features/logs/hooks/useLogs';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 const LogsPage = () => {
+    const {t} = useTranslation();
     const {projectId} = useParams();
     const {
         logs,
@@ -25,7 +27,7 @@ const LogsPage = () => {
 
     return (
         <PageContainer>
-            <PageTitle title={'Логи'} />
+            <PageTitle title={t('logs.title')} />
             <LogsFilters
                 fields={filters}
                 onFilterChange={handleFilterChange}

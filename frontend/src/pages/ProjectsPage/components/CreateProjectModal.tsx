@@ -3,6 +3,7 @@ import {Button, type ModalProps, Select, TextInput} from '@gravity-ui/uikit';
 import {useRef, useState} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {useTechnologies} from '@/features/projects/hooks/useTechnologies';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 interface CreateProjectModalProps extends ModalProps {
     createProject: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -14,6 +15,7 @@ export const CreateProjectModal = ({
     creatingProject,
     ...props
 }: CreateProjectModalProps) => {
+    const {t} = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
     const formtRef = useRef<HTMLFormElement>(null);
     const {technologies, loading: technologiesLoading} = useTechnologies();
@@ -36,7 +38,7 @@ export const CreateProjectModal = ({
         <Modal
             {...props}
             onTransitionInComplete={focusInput}
-            title="Создать проект"
+            title={t('projects.create')}
             disableBodyScrollLock={creatingProject}
             disableOutsideClick={creatingProject}
             disableVisuallyHiddenDismiss={creatingProject}
@@ -47,14 +49,14 @@ export const CreateProjectModal = ({
                         controlRef={inputRef}
                         name={'productName'}
                         type="text"
-                        placeholder="Название проекта"
+                        placeholder={t('projects.namePlaceholder')}
                     />
                 </div>
                 <div style={{height: 10}}></div>
                 <div>
                     <Select
                         name="technologyId"
-                        placeholder="Выберите технологию"
+                        placeholder={t('projects.selectTechnology')}
                         value={[selectedTechnologyId]}
                         onUpdate={(value) => setSelectedTechnologyId(value[0] || '')}
                         options={technologies.map((tech) => ({
@@ -73,7 +75,7 @@ export const CreateProjectModal = ({
                         type={'submit'}
                         disabled={!selectedTechnologyId}
                     >
-                        {'Создать'}
+                        {t('common.create')}
                     </Button>
                 </div>
             </form>
