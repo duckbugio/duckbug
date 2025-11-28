@@ -1,11 +1,13 @@
 import {useCallback, useState} from 'react';
 import {fetchProjectDelete} from '@/entities/project/api/fetchProjectDelete';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 interface UseDeleteProjectProps {
     onProjectDelete?: () => void;
 }
 
 export const useDeleteProject = ({onProjectDelete}: UseDeleteProjectProps = {}) => {
+    const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -19,12 +21,12 @@ export const useDeleteProject = ({onProjectDelete}: UseDeleteProjectProps = {}) 
 
                 onProjectDelete?.();
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Ошибка при удалении проекта');
+                setError(err instanceof Error ? err.message : t('projects.deleteError'));
             } finally {
                 setLoading(false);
             }
         },
-        [onProjectDelete],
+        [onProjectDelete, t],
     );
 
     return {

@@ -8,6 +8,8 @@ import {getMenuItems} from '@/widgets/Layout/MenuItems';
 import {getLogo} from '@/widgets/Layout/Logo';
 import {useUnit} from 'effector-react';
 import {$accessToken, $isAuthInitialized, $logout} from '@/features/auth/model/authModel';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
+import {LanguageSwitcher} from '@/widgets/Layout/LanguageSwitcher';
 
 interface LayoutProps {
     setTheme: (theme: Theme) => void;
@@ -18,7 +20,8 @@ export const Layout: FC<LayoutProps> = ({setTheme}) => {
     const navigate = useNavigate();
     const location = useLocation();
     const logo = getLogo();
-    const menuItems = getMenuItems(navigate);
+    const {t} = useTranslation();
+    const menuItems = getMenuItems(navigate, t);
 
     const [isAuth, isInitialized, logout] = useUnit([$accessToken, $isAuthInitialized, $logout]);
 
@@ -52,17 +55,22 @@ export const Layout: FC<LayoutProps> = ({setTheme}) => {
             )}
             menuItems={menuItems}
             renderFooter={() => (
-                <Menu>
-                    {/*<Menu.Item*/}
-                    {/*    iconStart={<Icon size={16} data={Gear} />}*/}
-                    {/*    title={'Item with icon'}*/}
-                    {/*/>*/}
-                    <Menu.Item
-                        iconStart={<Icon size={16} data={ArrowRightFromSquare} />}
-                        title={'Выйти'}
-                        onClick={logout}
-                    />
-                </Menu>
+                <>
+                    <div style={{padding: '8px 16px', display: 'flex', justifyContent: 'center'}}>
+                        <LanguageSwitcher />
+                    </div>
+                    <Menu>
+                        {/*<Menu.Item*/}
+                        {/*    iconStart={<Icon size={16} data={Gear} />}*/}
+                        {/*    title={'Item with icon'}*/}
+                        {/*/>*/}
+                        <Menu.Item
+                            iconStart={<Icon size={16} data={ArrowRightFromSquare} />}
+                            title={t('common.logout')}
+                            onClick={logout}
+                        />
+                    </Menu>
+                </>
             )}
         />
     );

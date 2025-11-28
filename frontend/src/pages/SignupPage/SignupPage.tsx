@@ -4,8 +4,10 @@ import {SignupForm} from '@/features/auth/ui/SignupForm';
 import {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Alert} from '@gravity-ui/uikit';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 export const SignupPage = () => {
+    const {t} = useTranslation();
     const signup = useUnit(signupFormSubmitted);
     const navigate = useNavigate();
     const signupError = useUnit($signupError);
@@ -13,11 +15,11 @@ export const SignupPage = () => {
     useEffect(() => {
         const unsubscribe = signupFx.done.watch(() => {
             navigate('/login', {
-                state: {message: 'Регистрация успешна! Теперь вы можете войти в систему.'},
+                state: {message: t('auth.signup.successMessage')},
             });
         });
         return () => unsubscribe();
-    }, [navigate]);
+    }, [navigate, t]);
 
     return (
         <div
@@ -34,13 +36,13 @@ export const SignupPage = () => {
                     <Alert
                         theme="danger"
                         style={{marginBottom: '20px'}}
-                        message={`Ошибка регистрации: ${signupError.message}`}
+                        message={`${t('auth.signup.error')}: ${signupError.message}`}
                     />
                 )}
                 <SignupForm onSubmit={signup} />
                 <div style={{marginTop: '20px', textAlign: 'center'}}>
                     <a href="/login" style={{color: '#0066cc'}}>
-                        Уже есть аккаунт? Войти
+                        {t('auth.signup.hasAccount')}
                     </a>
                 </div>
             </div>

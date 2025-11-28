@@ -7,6 +7,7 @@ import TableSelection from '@/shared/ui/Table/TableSelection';
 import {useState} from 'react';
 import {Button, Card} from '@gravity-ui/uikit';
 import {updateErrorGroupsStatus} from '@/entities/error/api/updateErrorGroupsStatus';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 interface ErrorGroupsTableProps {
     projectId: string;
@@ -25,6 +26,7 @@ export const ErrorGroupsTable = ({
     navigate,
     onRetry,
 }: ErrorGroupsTableProps) => {
+    const {t, currentLanguage} = useTranslation();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     if (loading) return <DataLoader />;
@@ -43,13 +45,13 @@ export const ErrorGroupsTable = ({
                         onRetry();
                     }}
                 >
-                    Пометить выбранные как решённые
+                    {t('errors.markSelectedAsResolved')}
                 </Button>
             </Card>
             <TableSelection
                 data={errors}
-                columns={getErrorGroupsTableColumns(projectId, navigate)}
-                emptyMessage="Список ошибок пуст"
+                columns={getErrorGroupsTableColumns(projectId, navigate, t, currentLanguage)}
+                emptyMessage={t('errors.empty')}
                 selectedIds={selectedIds}
                 onSelectionChange={setSelectedIds}
                 getRowDescriptor={(g: ErrGroup) => ({id: g.id})}

@@ -5,6 +5,7 @@ import {Technology} from '@/entities/technology/model/types';
 import {getProjectsTableColumns} from '@/features/projects/ui/ProjectsTable/lib/getProjectsTableColumns';
 import {NavigateFunction} from 'react-router-dom';
 import Table from '@/shared/ui/Table/Table';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 interface ProjectsListProps {
     projects: Project[];
@@ -25,14 +26,15 @@ export const ProjectsTable = ({
     onDelete,
     technologies,
 }: ProjectsListProps) => {
+    const {t} = useTranslation();
     if (loading) return <DataLoader />;
     if (error) return <DataFetchError errorMessage={error} onRetry={onRetry} />;
 
     return (
         <Table
             data={projects}
-            columns={getProjectsTableColumns(navigate, onDelete, technologies)}
-            emptyMessage="Нет доступных проектов"
+            columns={getProjectsTableColumns(navigate, t, onDelete, technologies)}
+            emptyMessage={t('projects.empty')}
         />
     );
 };

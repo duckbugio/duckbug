@@ -1,0 +1,118 @@
+{
+  "common": {
+    "logout": "Выйти",
+    "cancel": "Отмена",
+    "create": "Создать",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "edit": "Редактировать",
+    "close": "Закрыть",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "unknown": "Неизвестно",
+    "actions": "Действия",
+    "name": "Название",
+    "today": "Сегодня"
+  },
+  "auth": {
+    "login": {
+      "title": "Вход в систему",
+      "email": "Email",
+      "password": "Пароль",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "Пароль",
+      "submit": "Войти",
+      "noAccount": "Нет аккаунта? Зарегистрироваться",
+      "error": "Ошибка входа",
+      "required": "Обязательное поле",
+      "invalidEmail": "Некорректный email",
+      "minPasswordLength": "Минимум 6 символов"
+    },
+    "signup": {
+      "title": "Регистрация",
+      "email": "Email",
+      "password": "Пароль",
+      "confirmPassword": "Подтвердите пароль",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "Введите пароль",
+      "submit": "Зарегистрироваться",
+      "hasAccount": "Уже есть аккаунт? Войти",
+      "successMessage": "Регистрация успешна! Теперь вы можете войти в систему.",
+      "error": "Ошибка регистрации",
+      "required": "Обязательное поле",
+      "invalidEmail": "Некорректный email",
+      "minPasswordLength": "Минимум 6 символов",
+      "passwordsNotMatch": "Пароли не совпадают"
+    }
+  },
+  "menu": {
+    "projects": "Проекты",
+    "logs": "Логи",
+    "errors": "Ошибки",
+    "dashboard": "Главная"
+  },
+  "projects": {
+    "title": "Проекты",
+    "create": "Создать проект",
+    "delete": "Удаление проекта",
+    "deleteConfirm": "Вы уверены, что хотите удалить проект \"{{name}}\"? Это действие нельзя отменить.",
+    "namePlaceholder": "Название проекта",
+    "selectTechnology": "Выберите технологию",
+    "errors": "Ошибки",
+    "logs": "Логи",
+    "technology": "Технология",
+    "empty": "Нет доступных проектов",
+    "deleteError": "Ошибка при удалении проекта"
+  },
+  "logs": {
+    "title": "Логи",
+    "empty": "Список логов пуст"
+  },
+  "errors": {
+    "title": "Ошибки",
+    "events": "События",
+    "empty": "Список ошибок пуст",
+    "error": "Ошибка",
+    "line": "Строка",
+    "file": "Файл",
+    "eventsCount": "Событий",
+    "firstSeen": "Обнаружено",
+    "lastSeen": "Последний раз",
+    "markAsResolved": "Пометить как решено",
+    "markAsUnresolved": "Вернуть в открытые",
+    "markSelectedAsResolved": "Пометить выбранные как решённые",
+    "filters": {
+      "search": "Поиск...",
+      "allStatuses": "Все статусы",
+      "unresolved": "Открытые",
+      "resolved": "Решенные",
+      "ignored": "Игнор",
+      "from": "От",
+      "to": "До",
+      "reset": "Сбросить"
+    }
+  },
+  "format": {
+    "justNow": "только что",
+    "minutesAgo": "{{count}} мин. назад",
+    "todayAt": "сегодня в {{time}}",
+    "yesterdayAt": "вчера в {{time}}"
+  },
+  "errorDetail": {
+    "id": "ID",
+    "url": "URL",
+    "method": "Method",
+    "ip": "IP",
+    "headers": "Headers",
+    "queryParams": "Query Params",
+    "bodyParams": "Body Params",
+    "cookies": "Cookies",
+    "session": "Session",
+    "files": "Files"
+  },
+  "notFound": {
+    "title": "Страница не найдена",
+    "description": "Запрашиваемая страница не существует"
+  }
+}

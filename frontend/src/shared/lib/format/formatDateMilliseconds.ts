@@ -54,11 +54,15 @@ const formatDateTimeMilliseconds = (function () {
     };
 })();
 
-const formatDateTime = (date: number) => {
-    return formatDateTimeMilliseconds(date * 1000);
+const formatDateTime = (date: number, locale?: string) => {
+    return formatDateTimeMilliseconds(date * 1000, locale);
 };
 
-const unixToHumanReadable = (unixTimestamp: number): string => {
+const unixToHumanReadable = (
+    unixTimestamp: number,
+    t?: (key: string, options?: {count?: number; time?: string}) => string,
+    locale?: string,
+): string => {
     const date = new Date(unixTimestamp * 1000);
     const now = new Date();
 
@@ -82,16 +86,18 @@ const unixToHumanReadable = (unixTimestamp: number): string => {
 
     if (inputDate.getTime() === today.getTime()) {
         if (diffMinutes < 1) {
-            return 'только что';
+            return t ? t('format.justNow') : 'только что';
         } else if (diffMinutes < 60) {
-            return `${diffMinutes} мин. назад`;
+            return t ? t('format.minutesAgo', {count: diffMinutes}) : `${diffMinutes} мин. назад`;
         } else {
-            return `сегодня в ${formatTime(date)}`;
+            const time = formatTime(date);
+            return t ? t('format.todayAt', {time}) : `сегодня в ${time}`;
         }
     } else if (inputDate.getTime() === yesterday.getTime()) {
-        return `вчера в ${formatTime(date)}`;
+        const time = formatTime(date);
+        return t ? t('format.yesterdayAt', {time}) : `вчера в ${time}`;
     } else {
-        return formatDateTime(unixTimestamp);
+        return formatDateTime(unixTimestamp, locale);
     }
 };
 

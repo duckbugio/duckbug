@@ -9,6 +9,7 @@ import ErrorGroupTabs, {
 import {useState} from 'react';
 import JsonToTable from '@/shared/ui/JsonToTable/JsonToTable';
 import CodeBlock from '@/shared/ui/CodeBlock/CodeBlock';
+import {useTranslation} from '@/shared/lib/i18n/hooks';
 
 interface ErrorDetailProps {
     id?: string;
@@ -19,6 +20,7 @@ const handleRetry = () => {
 };
 
 export const ErrorDetail = ({id}: ErrorDetailProps) => {
+    const {t, currentLanguage} = useTranslation();
     const {err, loading, error} = useError({id});
     const [activeTab, setActiveTab] = useState<ErrorGroupTabsState>(
         ErrorGroupTabsState.STACK_TRACE,
@@ -27,12 +29,14 @@ export const ErrorDetail = ({id}: ErrorDetailProps) => {
     if (error) return <DataFetchError errorMessage={error} onRetry={handleRetry} />;
     if (!err || loading) return <DataLoader />;
 
+    const locale = currentLanguage === 'en' ? 'en-US' : 'ru-RU';
+
     return (
         <>
             <div style={{display: 'flex', justifyContent: 'space-between', gap: '12px'}}>
-                <Label theme={'info'}>{formatDateTimeMilliseconds(err.time)}</Label>
+                <Label theme={'info'}>{formatDateTimeMilliseconds(err.time, locale)}</Label>
                 <Label theme={'clear'} type={'copy'} copyText={id}>
-                    <b>ID</b>: {id}
+                    <b>{t('errorDetail.id')}</b>: {id}
                 </Label>
             </div>
 
@@ -50,33 +54,33 @@ export const ErrorDetail = ({id}: ErrorDetailProps) => {
             {activeTab === ErrorGroupTabsState.REQUEST && (
                 <>
                     <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                        <GravityText variant={'body-3'}>URL</GravityText>
+                        <GravityText variant={'body-3'}>{t('errorDetail.url')}</GravityText>
                         <br />
                         {err.url}
                     </Card>
 
                     <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                        <GravityText variant={'body-3'}>Method</GravityText>
+                        <GravityText variant={'body-3'}>{t('errorDetail.method')}</GravityText>
                         <br />
                         {err.method}
                     </Card>
 
                     <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                        <GravityText variant={'body-3'}>IP</GravityText>
+                        <GravityText variant={'body-3'}>{t('errorDetail.ip')}</GravityText>
                         <br />
                         {err.ip}
                     </Card>
 
                     {err.headers && (
                         <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                            <GravityText variant={'header-1'}>Headers</GravityText>
+                            <GravityText variant={'header-1'}>{t('errorDetail.headers')}</GravityText>
                             <JsonToTable data={err.headers} />
                         </Card>
                     )}
 
                     {err.queryParams && (
                         <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                            <GravityText variant={'header-1'}>Query Params</GravityText>
+                            <GravityText variant={'header-1'}>{t('errorDetail.queryParams')}</GravityText>
                             <JsonToTable data={err.queryParams} />
                         </Card>
                     )}
@@ -84,7 +88,7 @@ export const ErrorDetail = ({id}: ErrorDetailProps) => {
                     {err.bodyParams && (
                         <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
                             <GravityText variant={'header-1'} style={{marginTop: '16px'}}>
-                                Body Params
+                                {t('errorDetail.bodyParams')}
                             </GravityText>
                             <JsonToTable data={err.bodyParams} />
                         </Card>
@@ -92,21 +96,21 @@ export const ErrorDetail = ({id}: ErrorDetailProps) => {
 
                     {err.cookies && (
                         <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                            <GravityText variant={'header-1'}>Cookies</GravityText>
+                            <GravityText variant={'header-1'}>{t('errorDetail.cookies')}</GravityText>
                             <JsonToTable data={err.cookies} />
                         </Card>
                     )}
 
                     {err.session && (
                         <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                            <GravityText variant={'header-1'}>Session</GravityText>
+                            <GravityText variant={'header-1'}>{t('errorDetail.session')}</GravityText>
                             <JsonToTable data={err.session} />
                         </Card>
                     )}
 
                     {err.files && (
                         <Card style={{marginTop: '16px', padding: '16px', overflow: 'auto'}}>
-                            <GravityText variant={'header-1'}>Files</GravityText>
+                            <GravityText variant={'header-1'}>{t('errorDetail.files')}</GravityText>
                             <JsonToTable data={err.files} />
                         </Card>
                     )}
