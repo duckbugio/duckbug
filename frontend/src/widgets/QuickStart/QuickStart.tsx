@@ -1,8 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {
+    ClassAttributes,
+    ComponentType,
+    HTMLAttributes,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import {Button, Card, Text as GravityText, Icon} from '@gravity-ui/uikit';
 import {CopyInput} from '@/shared/ui/CopyInput';
 import ReactMarkdown from 'react-markdown';
-import type {Components} from 'react-markdown';
+import type {Components, ExtraProps} from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Prism from 'prismjs';
 import './QuickStart.scss';
@@ -19,7 +28,7 @@ const CodeBlock: React.FC<{children: React.ReactNode; className?: string}> = ({
     className,
 }) => {
     const codeRef = useRef<HTMLElement>(null);
-    const isInline = !className || !className.includes('language-');
+    const isInline = !className?.includes('language-');
 
     useEffect(() => {
         if (codeRef.current && !isInline) {
@@ -31,7 +40,7 @@ const CodeBlock: React.FC<{children: React.ReactNode; className?: string}> = ({
         return <code ref={codeRef}>{String(children)}</code>;
     }
 
-    const language = className?.replace('language-', '') || 'text';
+    const language = className.replace('language-', '');
 
     return (
         <code ref={codeRef} className={className} title={`Code block: ${language}`}>
@@ -40,120 +49,93 @@ const CodeBlock: React.FC<{children: React.ReactNode; className?: string}> = ({
     );
 };
 
-const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
-    const markdownWithDsn = exampleDsnConnection
-        ? exampleDsnConnection.replace(/YOUR_DSN_HERE/g, dsn)
-        : '';
+const PreWithCopy = (
+    props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
+        node?: unknown;
+    },
+) => {
+    const [isCopied, setIsCopied] = useState(false);
 
-    const markdownComponents: Components = {
-        pre(pre) {
-            const [isCopied, setIsCopied] = useState(false);
+    const handleCopyClick = useCallback(() => {
+        // @ts-expect-error - accessing internal ReactMarkdown node structure
+        const codeValue = props.node?.children[0]?.children[0]?.value;
 
-            const handleCopyClick = () => {
-                //@ts-ignore
-                const codeValue = pre.node?.children[0]?.children[0].value;
+        if (codeValue) {
+            navigator.clipboard.writeText(codeValue);
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 1000);
+        }
+    }, [props.node]);
 
-                if (codeValue) {
-                    navigator.clipboard.writeText(codeValue);
-                    setIsCopied(true);
-                    setTimeout(() => setIsCopied(false), 2000);
-                }
-            };
-
-            return (
-                <div className="pre-container">
-                    <div className="copy-button-container">
-                        <Button
-                            className="copy-button"
-                            view="outlined-contrast"
-                            onClick={handleCopyClick}
-                            title="Копировать код"
-                            size="m"
-                        >
-                            <Icon data={isCopied ? Check : Copy} size={16} />
-                        </Button>
-                    </div>
-                    <pre {...pre}></pre>
-                </div>
-            );
-        },
-        code(props) {
-            const {className, children} = props;
-            return <CodeBlock className={className}>{children}</CodeBlock>;
-        },
-        p({children}) {
-            return <GravityText as="p">{children}</GravityText>;
-        },
-        h1({children}) {
-            return (
-                <GravityText as="h1" variant="header-1">
-                    {children}
-                </GravityText>
-            );
-        },
-        h2({children}) {
-            return (
-                <GravityText as="h2" variant="header-2">
-                    {children}
-                </GravityText>
-            );
-        },
-        h3({children}) {
-            return (
-                <GravityText as="h3" variant="header-2">
-                    {children}
-                </GravityText>
-            );
-        },
-        h4({children}) {
-            return (
-                <GravityText as="h4" variant="subheader-1">
-                    {children}
-                </GravityText>
-            );
-        },
-        h5({children}) {
-            return (
-                <GravityText as="h5" variant="subheader-2">
-                    {children}
-                </GravityText>
-            );
-        },
-        h6({children}) {
-            return (
-                <GravityText as="h6" variant="subheader-3">
-                    {children}
-                </GravityText>
-            );
-        },
-        ul({children}) {
-            return <ul className="quick-start-list">{children}</ul>;
-        },
-        ol({children}) {
-            return <ol className="quick-start-list">{children}</ol>;
-        },
-        li({children}) {
-            return <li className="quick-start-list-item">{children}</li>;
-        },
-        a({href, children}) {
-            return (
-                <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="quick-start-link"
+    return (
+        <div className="pre-container">
+            <div className="copy-button-container">
+                <Button
+                    className="copy-button"
+                    view="outlined-contrast"
+                    onClick={handleCopyClick}
+                    title="Копировать код"
+                    size="m"
                 >
-                    {children}
-                </a>
-            );
-        },
-        strong({children}) {
-            return <strong className="quick-start-strong">{children}</strong>;
-        },
-        em({children}) {
-            return <em className="quick-start-em">{children}</em>;
-        },
-    };
+                    <Icon data={isCopied ? Check : Copy} size={16} />
+                </Button>
+            </div>
+            <pre {...props} />
+        </div>
+    );
+};
+
+const markdownComponents: Components = {
+    pre: PreWithCopy,
+    code: ({className, children}) => <CodeBlock className={className}>{children}</CodeBlock>,
+    p: ({children}) => <GravityText as="p">{children}</GravityText>,
+    h1: ({children}) => (
+        <GravityText as="h1" variant="header-1">
+            {children}
+        </GravityText>
+    ),
+    h2: ({children}) => (
+        <GravityText as="h2" variant="header-2">
+            {children}
+        </GravityText>
+    ),
+    h3: ({children}) => (
+        <GravityText as="h3" variant="header-2">
+            {children}
+        </GravityText>
+    ),
+    h4: ({children}) => (
+        <GravityText as="h4" variant="subheader-1">
+            {children}
+        </GravityText>
+    ),
+    h5: ({children}) => (
+        <GravityText as="h5" variant="subheader-2">
+            {children}
+        </GravityText>
+    ),
+    h6: ({children}) => (
+        <GravityText as="h6" variant="subheader-3">
+            {children}
+        </GravityText>
+    ),
+    ul: ({children}) => <ul className="quick-start-list">{children}</ul>,
+    ol: ({children}) => <ol className="quick-start-list">{children}</ol>,
+    li: ({children}) => <li className="quick-start-list-item">{children}</li>,
+    a: ({href, children}) => (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="quick-start-link">
+            {children}
+        </a>
+    ),
+    strong: ({children}) => <strong className="quick-start-strong">{children}</strong>,
+    em: ({children}) => <em className="quick-start-em">{children}</em>,
+};
+
+const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
+    const markdownWithDsn = useMemo(
+        () => exampleDsnConnection?.replace(/YOUR_DSN_HERE/g, dsn) ?? '',
+        [dsn, exampleDsnConnection],
+    );
 
     return (
         <>
