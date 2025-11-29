@@ -7,7 +7,7 @@ import {useProject} from '@/features/projects/hooks/useProject';
 import {DataLoader} from '@/shared/ui/DataLoader';
 import {DataFetchError} from '@/shared/ui/DataFetchError';
 import QuickStart from '@/widgets/QuickStart/QuickStart';
-import {useMemo, useEffect} from 'react';
+import {useEffect, useMemo} from 'react';
 import ProjectTabs, {TabsState} from '@/features/projects/ui/ProjectTabs/ProjectTabs';
 import {ErrorGroupsFilters} from '@/features/errors/ui/ErrorGroupsFilters';
 import {ErrorGroupsTable} from '@/features/errors/ui/ErrorGroupsTable';
@@ -22,7 +22,7 @@ const ProjectPage = () => {
     const {projectId} = useParams();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-    
+
     // Определяем активный таб из URL или используем дефолтный
     const activeTab = useMemo(() => {
         const tabParam = searchParams.get('tab');
@@ -31,7 +31,7 @@ const ProjectPage = () => {
         }
         return TabsState.ERRORS;
     }, [searchParams]);
-    
+
     // Добавляем параметр tab в URL при первой загрузке, если его нет
     useEffect(() => {
         if (!searchParams.get('tab')) {
@@ -40,7 +40,7 @@ const ProjectPage = () => {
             setSearchParams(newSearchParams, {replace: true});
         }
     }, [searchParams, setSearchParams]);
-    
+
     // Обработчик изменения таба с обновлением URL (сохраняем остальные параметры)
     const handleTabChange = (newTab: TabsState) => {
         const newSearchParams = new URLSearchParams(searchParams);
