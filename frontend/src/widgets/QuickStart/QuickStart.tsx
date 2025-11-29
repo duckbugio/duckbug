@@ -8,7 +8,6 @@ type QuickStartProps = {
     exampleDsnConnection?: string;
 };
 
-
 const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
     const markdownWithDsn = useMemo(
         () => exampleDsnConnection?.replace(/YOUR_DSN_HERE/g, dsn) ?? '',
