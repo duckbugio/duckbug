@@ -20,6 +20,21 @@
         }
     }
 
+    .pre-container {
+        position: relative;
+    }
+
+    .copy-button-container {
+        z-index: 1;
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+    }
+
+    .copy-button {
+        texttransform: uppercase;
+    }
+
     .quick-start-list {
         margin: 12px 0;
         padding-left: 24px;
@@ -70,6 +85,7 @@
             font-size: 0.9em;
             line-height: 1.5;
             color: var(--g-color-text-primary);
+            text-shadow: 0;
         }
     }
 }

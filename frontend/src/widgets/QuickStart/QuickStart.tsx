@@ -1,11 +1,13 @@
-import React, {useEffect, useRef} from 'react';
-import {Card, Text as GravityText} from '@gravity-ui/uikit';
+import React, {useEffect, useRef, useState} from 'react';
+import {Button, Card, Text as GravityText, Icon} from '@gravity-ui/uikit';
 import {CopyInput} from '@/shared/ui/CopyInput';
 import ReactMarkdown from 'react-markdown';
 import type {Components} from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Prism from 'prismjs';
 import './QuickStart.scss';
+import 'prismjs/themes/prism-tomorrow.css';
+import {Check, Copy} from '@gravity-ui/icons';
 
 type QuickStartProps = {
     dsn: string;
@@ -26,21 +28,15 @@ const CodeBlock: React.FC<{children: React.ReactNode; className?: string}> = ({
     }, [children, isInline]);
 
     if (isInline) {
-        return (
-            <code ref={codeRef} className="quick-start-inline-code">
-                {String(children)}
-            </code>
-        );
+        return <code ref={codeRef}>{String(children)}</code>;
     }
 
     const language = className?.replace('language-', '') || 'text';
 
     return (
-        <pre className="quick-start-code-block">
-            <code ref={codeRef} className={className} title={`Code block: ${language}`}>
-                {String(children).replace(/\n$/, '')}
-            </code>
-        </pre>
+        <code ref={codeRef} className={className} title={`Code block: ${language}`}>
+            {String(children).replace(/\n$/, '')}
+        </code>
     );
 };
 
@@ -50,6 +46,37 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
         : '';
 
     const markdownComponents: Components = {
+        pre(pre) {
+            const [isCopied, setIsCopied] = useState(false);
+
+            const handleCopyClick = () => {
+                //@ts-ignore
+                const codeValue = pre.node?.children[0]?.children[0].value;
+
+                if (codeValue) {
+                    navigator.clipboard.writeText(codeValue);
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 2000);
+                }
+            };
+
+            return (
+                <div className="pre-container">
+                    <div className="copy-button-container">
+                        <Button
+                            className="copy-button"
+                            view="outlined-contrast"
+                            onClick={handleCopyClick}
+                            title="Копировать код"
+                            size="m"
+                        >
+                            <Icon data={isCopied ? Check : Copy} size={16} />
+                        </Button>
+                    </div>
+                    <pre {...pre}></pre>
+                </div>
+            );
+        },
         code(props) {
             const {className, children} = props;
             return <CodeBlock className={className}>{children}</CodeBlock>;
@@ -135,7 +162,7 @@ const QuickStart: React.FC<QuickStartProps> = ({dsn, exampleDsnConnection}) => {
             </Card>
 
             {markdownWithDsn && (
-                <Card view="filled" style={{padding: '16px', margin: '16px 0'}}>
+                <Card style={{padding: '16px', margin: '16px 0'}}>
                     <div className="quick-start-markdown">
                         <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                             {markdownWithDsn}
