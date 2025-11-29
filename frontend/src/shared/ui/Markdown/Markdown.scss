@@ -1,0 +1,63 @@
+.markdown {
+    p {
+        margin: 0 0 12px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 16px 0 12px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .markdown-pre-container {
+        position: relative;
+    }
+
+    .markdown-copy-button-container {
+        z-index: 1;
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+    }
+
+    .markdown-copy-button {
+        text-transform: uppercase;
+    }
+
+    .markdown-list {
+        margin: 12px 0;
+        padding-left: 24px;
+    }
+
+    .markdown-list-item {
+        margin: 4px 0;
+    }
+
+    .markdown-link {
+        color: var(--g-color-text-link);
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .markdown-strong {
+        font-weight: 600;
+    }
+
+    .markdown-em {
+        font-style: italic;
+    }
+}
