@@ -1,4 +1,4 @@
-.quick-start-markdown {
+.markdown {
     p {
         margin: 0 0 12px;
 
@@ -20,31 +20,31 @@
         }
     }
 
-    .pre-container {
+    .markdown-pre-container {
         position: relative;
     }
 
-    .copy-button-container {
+    .markdown-copy-button-container {
         z-index: 1;
         position: absolute;
         top: 0.5em;
         right: 0.5em;
     }
 
-    .copy-button {
+    .markdown-copy-button {
         text-transform: uppercase;
     }
 
-    .quick-start-list {
+    .markdown-list {
         margin: 12px 0;
         padding-left: 24px;
     }
 
-    .quick-start-list-item {
+    .markdown-list-item {
         margin: 4px 0;
     }
 
-    .quick-start-link {
+    .markdown-link {
         color: var(--g-color-text-link);
         text-decoration: none;
 
@@ -53,11 +53,11 @@
         }
     }
 
-    .quick-start-strong {
+    .markdown-strong {
         font-weight: 600;
     }
 
-    .quick-start-em {
+    .markdown-em {
         font-style: italic;
     }
 }
